@@ -1,0 +1,66 @@
+\section{Spectral Operator and Eigenbasis Construction}
+
+\subsection{Overview}
+
+The spectral operator defines the transition from altitude A5 to A7 in
+the Redux geometric pipeline. Its purpose is to extract a stable
+eigenbasis from the manifold's metric structure and project input
+vectors into this basis. This section formalizes the spectral
+decomposition and establishes the mathematical properties required for
+later curvature and holonomy modulation.
+
+\subsection{Spectral Decomposition}
+
+Given the metric tensor $g_x$ at a point $x \in M$, we define the
+associated symmetric matrix
+\[
+G(x) \in \mathbb{R}^{80 \times 80}.
+\]
+Because $G(x)$ is positive-definite, it admits an eigendecomposition
+\[
+G(x) = U(x) \Lambda(x) U(x)^\top,
+\]
+where
+\begin{itemize}
+    \item $U(x)$ is an orthonormal matrix of eigenvectors,
+    \item $\Lambda(x)$ is a diagonal matrix of eigenvalues
+          $\lambda_1(x), \ldots, \lambda_{80}(x)$.
+\end{itemize}
+
+\subsection{Projection Operator}
+
+For any vector $v \in \mathbb{R}^{80}$, the spectral projection is
+defined as
+\[
+s = U(x)^\top v.
+\]
+This representation expresses $v$ in the eigenbasis of the local
+geometry. The projection is stable under small perturbations of $G(x)$
+due to the smooth dependence of eigenvectors on the metric.
+
+\subsection{Stability Bounds}
+
+Let $\delta G$ be a perturbation of the metric tensor. Standard
+perturbation theory yields
+\[
+\| U(x + \delta x) - U(x) \| \leq C \| \delta G \|,
+\]
+for some constant $C$ depending on the spectral gap of $G(x)$. This
+ensures that the spectral operator behaves smoothly across the manifold
+and does not introduce discontinuities into the embedding pipeline.
+
+\subsection{Altitude Interpretation}
+
+The spectral operator lifts the representation from altitude A5
+(normalized structural features) to altitude A7 (spectral geometry).
+This transition is essential for capturing global geometric behavior
+that cannot be expressed through local degree-based features alone.
+
+\subsection{Output}
+
+The output of the spectral operator is the projected vector
+\[
+s \in \mathbb{R}^{80},
+\]
+which serves as the input to the curvature envelope operator in the
+next stage of the pipeline.
