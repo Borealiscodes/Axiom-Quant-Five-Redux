@@ -1,74 +1,33 @@
 module Redux
 
-# --- Core system imports ---
-using ..Runtime
-using ..Diagnostics
-using ..InvariantSuite
+# Core manifold
+include("Manifold80D.jl")
 
-# --- Domain imports ---
-using ..ErdosGraph
-using ..BitNetTernary
-using ..MarkowitzFrontier
-using ..BlackScholesVol
-using ..RenyiDyadic
+# Operators
+include("A7_Spectral.jl")
+include("CurvatureEnvelope.jl")
+include("HolonomyField.jl")
+include("TopologyOperator.jl")
+include("FusionOperator.jl")
 
-# --- Invariant imports ---
-using ..ConnectivityInvariant
-using ..QuantizationInvariant
-using ..ConvexityInvariant
-using ..CanonicalFormInvariant
-using ..EntropyShiftInvariant
+# Domains
+include("ErdosGraph.jl")
+include("BitNetTernary.jl")
+include("MarkowitzFrontier.jl")
+include("BlackScholesVol.jl")
+include("RenyiEntropy.jl")
 
-# --- Manifold ---
-using ..Manifold80D
+# Invariants
+include("ConnectivityInvariant.jl")
+include("QuantizationInvariant.jl")
+include("ConvexityInvariant.jl")
+include("CanonicalFormInvariant.jl")
+include("EntropyShiftInvariant.jl")
 
-export redux, ReduxResult
+# Runtime
+include("Runtime.jl")
 
-"""
-    ReduxResult
-
-Unified output of the top-level Redux orchestrator.
-Stores:
-- runtime state
-- diagnostic report
-"""
-struct ReduxResult
-    runtime::Runtime.RuntimeState
-    diagnostics::Diagnostics.DiagnosticReport
-end
-
-
-"""
-    redux(config)
-
-Top-level entry point for Axiom-Quant-Five-Redux.
-
-Runs:
-1. Full runtime pipeline
-2. Full diagnostic pipeline
-
-Returns a `ReduxResult` containing:
-- manifold
-- domain states
-- invariant suite
-- diagnostic summaries
-
-`config` is a NamedTuple containing:
-- n, p           (Erdos)
-- x              (BitNet)
-- returns, cov   (Markowitz)
-- strikes, mats  (Black-Scholes)
-- probs, alpha   (Renyi)
-"""
-function redux(config::NamedTuple)
-
-    # Run full pipeline
-    runtime_state = Runtime.run_redux(config)
-
-    # Generate diagnostics
-    diagnostics = Diagnostics.generate_report(runtime_state)
-
-    return ReduxResult(runtime_state, diagnostics)
-end
+# Export the runtime constructor
+export ReduxRuntime, evaluate_geometry, evaluate_all_invariants
 
 end # module
