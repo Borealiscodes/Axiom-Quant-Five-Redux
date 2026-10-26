@@ -1,58 +1,93 @@
 module CanonicalFormInvariant
 
-using ..BlackScholesVol
+export canonical_score, canonical_invariant
+
+using LinearAlgebra
 using ..Manifold80D
-using ..CurvatureEnvelope
 using ..A7_Spectral
-using ..A8_SoftManifold
-export CanonicalFormInvariantState, compute_canonical_form_invariant
+using ..CurvatureEnvelope
+using ..HolonomyField
+using ..TopologyOperator
+using ..FusionOperator
+using ..ConnectivityInvariant
+using ..QuantizationInvariant
+using ..ConvexityInvariant
+
+# ============================================================
+#  Canonical Score
+# ============================================================
 
 """
-    CanonicalFormInvariantState
+    canonical_score(e, M)
 
-Represents the canonical-form curvature invariant for an embedded volatility surface.
-Stores:
-- raw spectral score
-- manifold projection
-- invariant value
+Computes a canonical-form score for an embedded vector e ∈ ℝ⁸⁰.
+
+Score combines:
+- spectral energy
+- curvature energy
+- holonomy energy
+- topology energy
+- connectivity invariant
+- quantization invariant
+- convexity invariant
+
+Formula:
+    S = α Es + β Ec + γ Eh + δ Et
+        + ε I_conn + ζ I_quant + η I_convex
+
+Altitude: A8.
 """
-struct CanonicalFormInvariantState
-    spectral_score::Float64
-    projection::Vector{Float64}
-    invariant::Float64
-    altitude::Int
+function canonical_score(e::Vector{Float64}, M::Manifold80D.SoftManifold80D)
+    if length(e) != M.dim
+        error("Canonical score error: vector dimension mismatch.")
+    end
+
+    # Base geometric energies
+    Es = A7_Spectral.spectral_energy(e, M)
+    Ec = CurvatureEnvelope.curvature_energy(e, M)
+    Eh = HolonomyField.holonomy_energy(e, M)
+    Et = TopologyOperator.topology_energy(e, M)
+
+    # Invariant energies
+    I_conn   = ConnectivityInvariant.connectivity_invariant(e, M)
+    I_quant  = QuantizationInvariant.quantization_invariant(e, M)
+    I_convex = ConvexityInvariant.convexity_invariant(e, M)
+
+    # Weights
+    α = 0.15
+    β = 0.15
+    γ = 0.15
+    δ = 0.15
+    ε = 0.1333
+    ζ = 0.1333
+    η = 0.1333
+
+    return α*Es + β*Ec + γ*Eh + δ*Et +
+           ε*I_conn + ζ*I_quant + η*I_convex
 end
 
 
+# ============================================================
+#  Canonical-Form Invariant
+# ============================================================
+
 """
-    compute_canonical_form_invariant(BS, M)
+    canonical_invariant(e, M)
 
-Computes a placeholder canonical-form invariant:
-- spectral_score = variance of volatility surface
-- projection = curvature-modulated manifold embedding
-- invariant = spectral_score * norm(projection)
+Computes the full canonical-form invariant:
 
-Altitude: A7 → A8 invariant extraction.
+    I_canon = Φ(e) * S
+
+where:
+- Φ(e) is fusion energy
+- S is canonical score
+
+Altitude: A8 → A2.
 """
-function compute_canonical_form_invariant(BS::BlackScholesVol.BlackScholesState,
-                                          M::Manifold80D.SoftManifold80D)
-
-    # A7 spectral validation
-    A7_Spectral.route_to_A7(BS.vol_surface, M)
-
-    # Raw spectral score: variance of vol surface
-    spectral_score = var(BS.vol_surface)
-
-    # Manifold projection (curvature-modulated)
-    projection = BlackScholesVol.embed_blackscholes_in_manifold(BS, M)
-
-    # A8 soft-manifold routing (holonomy + slack dimensions)
-    A8_SoftManifold.route_to_A8(projection, M)
-
-    # Invariant: placeholder norm-based curvature proxy
-    invariant_value = spectral_score * norm(projection)
-
-    return CanonicalFormInvariantState(spectral_score, projection, invariant_value, 8)
+function canonical_invariant(e::Vector{Float64}, M::Manifold80D.SoftManifold80D)
+    S = canonical_score(e, M)
+    Φ = FusionOperator.fusion_energy(e, M)
+    return Φ * S
 end
 
 end # module
