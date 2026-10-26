@@ -1,151 +1,202 @@
-\section{Appendix: Lean Interface and Formalization Scaffold}
+\section{Lean Interface Specification}
+\label{sec:leaninterface}
 
-\subsection{Overview}
+This appendix provides the formal interface between the mathematical
+specification of AxiomQuant Five Redux and its Lean formalization. The purpose
+of this interface is to define the structures, operators, predicates, and
+verification obligations that Lean must implement and prove.
 
-This appendix defines the interface between the TeX mathematical spine
-and the Lean formal verification environment. The purpose is not to
-provide full proofs, but to specify the types, structures, and proof
-obligations required for a complete formalization of the Redux pipeline.
+\subsection{Lean Namespace Structure}
 
-Each operator introduced in previous sections is represented as a Lean
-structure with associated properties. This appendix serves as the
-canonical reference for the Lean modules.
-
-\subsection{Manifold Structure}
-
-We define the manifold type as
-\[
-M : \mathrm{Type},
-\]
-equipped with a metric tensor
-\[
-g : M \to \mathrm{Matrix}\; 80\; 80,
-\]
-and a curvature tensor
-\[
-R : M \to \mathrm{Tensor}\; 3.
-\]
-
-Lean representation:
-\begin{verbatim}
-structure Manifold :=
-  (dim : ℕ)
-  (metric : Point → Matrix dim dim)
-  (curvature : Point → Tensor 3 dim)
-\end{verbatim}
-
-\subsection{Spectral Operator}
-
-The spectral operator is represented as a structure containing the
-eigenbasis and projection map.
-
-\[
-U(x) : \mathrm{Matrix}\; 80\; 80,
-\quad
-s = U(x)^\top v.
-\]
-
-Lean signature:
-\begin{verbatim}
-structure Spectral :=
-  (U : Point → Matrix 80 80)
-  (project : Point → Vector 80 → Vector 80)
-\end{verbatim}
-
-\subsection{Curvature Envelope}
-
-The curvature envelope is represented as a function
-\[
-\kappa : M \to \mathrm{Vector}\; 80.
-\]
-
-Lean signature:
-\begin{verbatim}
-structure CurvatureEnvelope :=
-  (kappa : Point → Vector 80)
-  (modulate : Point → Vector 80 → Vector 80)
-\end{verbatim}
-
-\subsection{Holonomy Transport}
-
-Holonomy transport is represented as an orthogonal matrix
-\[
-H(x) \in \mathrm{O}(80).
-\]
-
-Lean signature:
-\begin{verbatim}
-structure Holonomy :=
-  (H : Point → Matrix 80 80)
-  (transport : Point → Vector 80 → Vector 80)
-\end{verbatim}
-
-\subsection{Topology Modulation}
-
-The topology signature is represented as
-\[
-\tau : M \to \mathrm{Vector}\; 80.
-\]
-
-Lean signature:
-\begin{verbatim}
-structure Topology :=
-  (tau : Point → Vector 80)
-  (modulate : Point → Vector 80 → Vector 80)
-\end{verbatim}
-
-\subsection{Embedding Pipeline}
-
-The full embedding pipeline is represented as a composition of the
-operators defined above.
-
-Lean signature:
-\begin{verbatim}
-structure Pipeline :=
-  (Φ₁ : Structural)
-  (Φ₂ : Spectral)
-  (Φ₃ : CurvatureEnvelope)
-  (Φ₄ : Holonomy)
-  (Φ₅ : Topology)
-  (embed : Graph → Vector 80)
-\end{verbatim}
-
-\subsection{Invariant Layer}
-
-Each invariant is represented as a function
-\[
-I_k : \mathrm{Vector}\; 80 \to \mathbb{R}.
-\]
-
-Lean signature:
-\begin{verbatim}
-structure Invariant :=
-  (eval : Vector 80 → ℝ)
-\end{verbatim}
-
-\subsection{Proof Obligations}
-
-The following properties must be proven in Lean:
+Lean namespaces mirror the mathematical structure:
 
 \begin{itemize}
-  \item \textbf{Stability:}
-    \[
-    \| E(G) - E(G') \| \leq C \| G - G' \|.
-    \]
-  \item \textbf{Reversibility:}
-    \[
-    Φ_k^{-1}(Φ_k(v)) = v.
-    \]
-  \item \textbf{Smoothness:}
-    All operators depend smoothly on the metric tensor.
-  \item \textbf{Altitude monotonicity:}
-    No operator lowers altitude.
+    \item \texttt{AxiomQuant.Manifold}
+    \item \texttt{AxiomQuant.Operators.Spectral}
+    \item \texttt{AxiomQuant.Operators.Curvature}
+    \item \texttt{AxiomQuant.Operators.Holonomy}
+    \item \texttt{AxiomQuant.Operators.Topology}
+    \item \texttt{AxiomQuant.Operators.Invariant}
+    \item \texttt{AxiomQuant.Pipeline}
+    \item \texttt{AxiomQuant.Altitude}
+    \item \texttt{AxiomQuant.Domain}
+    \item \texttt{AxiomQuant.Verification}
 \end{itemize}
 
-These obligations define the formal verification roadmap.
+\subsection{Lean Structure Definitions}
 
-\subsection{Conclusion}
+Lean requires structure definitions for:
 
-This appendix provides the Lean interface required for formalizing the
-Redux pipeline. It serves as the bridge between the TeX mathematical
-spine and the proof environment.
+\paragraph{Manifold Structure}
+\[
+\texttt{structure Manifold80 :=
+\{ g : MetricTensor,
+  R : CurvatureTensor,
+  H : HolonomyField,
+  tau : TopologySignature \}}
+\]
+
+\paragraph{Spectral Structure}
+\[
+\texttt{structure Spectral :=
+\{ s : Vector m \}}
+\]
+
+\paragraph{Curvature Structure}
+\[
+\texttt{structure Curvature :=
+\{ c : Vector 80 \}}
+\]
+
+\paragraph{Holonomy Structure}
+\[
+\texttt{structure Holonomy :=
+\{ h : Vector 80 \}}
+\]
+
+\paragraph{Topology Structure}
+\[
+\texttt{structure Topology :=
+\{ t : Vector 80 \}}
+\]
+
+\paragraph{Invariant Structure}
+\[
+\texttt{structure Invariant :=
+\{ C\_conn : \mathbb{R},
+  Q\_tern : \mathbb{R},
+  V\_conv : \mathbb{R},
+  F\_canon : \mathbb{R},
+  S\_entropy : \mathbb{R} \}}
+\]
+
+\subsection{Lean Operator Signatures}
+
+Lean operator signatures mirror the mathematical operators:
+
+\[
+\texttt{def Phi5 : Manifold80 → Spectral}
+\]
+\[
+\texttt{def Phi7 : Spectral → Curvature}
+\]
+\[
+\texttt{def Phi8 : Curvature → Holonomy}
+\]
+\[
+\texttt{def Phi8t : Holonomy → Topology}
+\]
+\[
+\texttt{def Phi9 : Topology → Invariant}
+\]
+
+\subsection{Lean Pipeline Definition}
+
+Lean defines the pipeline:
+
+\[
+\texttt{def E : Manifold80 → Invariant :=
+  fun x => Phi9 (Phi8t (Phi8 (Phi7 (Phi5 x))))}
+\]
+
+\subsection{Altitude Predicates}
+
+Lean altitude predicates:
+
+\[
+\texttt{def AltitudeA3 : Manifold80 → Prop}
+\]
+\[
+\texttt{def AltitudeA5 : Spectral → Prop}
+\]
+\[
+\texttt{def AltitudeA7 : Curvature → Prop}
+\]
+\[
+\texttt{def AltitudeA8 : Holonomy → Prop}
+\]
+\[
+\texttt{def AltitudeA8t : Topology → Prop}
+\]
+\[
+\texttt{def AltitudeA9 : Invariant → Prop}
+\]
+
+\subsection{Domain Predicates}
+
+Lean domain predicates:
+
+\[
+\texttt{def DomainD1 : Manifold80 → Prop}
+\]
+\[
+\texttt{def DomainD2 : Spectral → Prop}
+\]
+\[
+\texttt{def DomainD3 : Curvature → Prop}
+\]
+\[
+\texttt{def DomainD4 : Holonomy → Prop}
+\]
+\[
+\texttt{def DomainD5 : Topology → Prop}
+\]
+
+\subsection{Verification Obligations}
+
+Lean must prove:
+
+\paragraph{Smoothness}
+\[
+\texttt{theorem smooth\_E : Smooth E}
+\]
+
+\paragraph{Stability}
+\[
+\texttt{theorem stable\_E :
+  ∀ x y, ∥E x - E y∥ ≤ C * ∥x - y∥}
+\]
+
+\paragraph{Reversibility}
+\[
+\texttt{theorem reversible\_E :
+  ∀ x y, E x = E y → x = y}
+\]
+
+\paragraph{Monotonicity}
+\[
+\texttt{theorem monotone\_E :
+  ∀ x y, x ≤ y → E x ≤ E y}
+\]
+
+\paragraph{Altitude Preservation}
+\[
+\texttt{theorem altitude\_preserved :
+  AltitudeA3 x → AltitudeA9 (E x)}
+\]
+
+\paragraph{Domain Preservation}
+\[
+\texttt{theorem domain\_preserved :
+  DomainD1 x → DomainD5 (E x)}
+\]
+
+\paragraph{Invariant Correctness}
+\[
+\texttt{theorem invariant\_correct :
+  ∀ x, E x ∈ Kernel5}
+\]
+
+\subsection{Operator Role}
+
+The Lean interface ensures that:
+
+\begin{itemize}
+    \item all operators have formal type signatures,
+    \item all structures are formally defined,
+    \item all altitude/domain semantics are encoded,
+    \item all verification obligations are stated,
+    \item the pipeline is formally expressible in Lean.
+\end{itemize}
+
+This completes the Lean interface specification.
