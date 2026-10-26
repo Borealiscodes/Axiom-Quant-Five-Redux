@@ -1,0 +1,46 @@
+{
+  "lean_theorems": {
+    "Axiom_SoftManifold": {
+      "depends_on": []
+    },
+    "Lemma_CurvatureEnvelope": {
+      "depends_on": ["Axiom_SoftManifold"]
+    },
+    "Lemma_HolonomyTransport": {
+      "depends_on": ["Axiom_SoftManifold"]
+    },
+    "Lemma_AltitudeMonotonicity": {
+      "depends_on": ["Axiom_SoftManifold"]
+    },
+    "Theorem_DomainEmbedding_Erdos": {
+      "depends_on": ["Axiom_SoftManifold", "Lemma_CurvatureEnvelope"]
+    },
+    "Theorem_DomainEmbedding_BitNet": {
+      "depends_on": ["Axiom_SoftManifold", "Lemma_HolonomyTransport"]
+    },
+    "Theorem_DomainEmbedding_Markowitz": {
+      "depends_on": ["Axiom_SoftManifold", "Lemma_CurvatureEnvelope"]
+    },
+    "Theorem_DomainEmbedding_BlackScholes": {
+      "depends_on": ["Axiom_SoftManifold", "Lemma_CurvatureEnvelope"]
+    },
+    "Theorem_DomainEmbedding_Renyi": {
+      "depends_on": ["Axiom_SoftManifold", "Lemma_HolonomyTransport"]
+    },
+    "Invariant_Connectivity_Sound": {
+      "depends_on": ["Theorem_DomainEmbedding_Erdos"]
+    },
+    "Invariant_Quantization_Sound": {
+      "depends_on": ["Theorem_DomainEmbedding_BitNet"]
+    },
+    "Invariant_Convexity_Sound": {
+      "depends_on": ["Theorem_DomainEmbedding_Markowitz"]
+    },
+    "Invariant_CanonicalForm_Sound": {
+      "depends_on": ["Theorem_DomainEmbedding_BlackScholes"]
+    },
+    "Invariant_EntropyShift_Sound": {
+      "depends_on": ["Theorem_DomainEmbedding_Renyi"]
+    }
+  }
+}
