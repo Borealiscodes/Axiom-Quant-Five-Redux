@@ -1,91 +1,152 @@
-\section{Curvature Envelope Operator}
+\section{Curvature Operator \texorpdfstring{$\Phi_7$}{Phi7}}
+\label{sec:curvature}
 
-\subsection{Overview}
+This appendix provides the full mathematical development of the curvature
+operator $\Phi_7$, corresponding to altitude $A7$ and domain $D_3$ in the
+AxiomQuant Five Redux system. The operator acts on the spectral output
+$s(x) = \Phi_5(x)$ and lifts it into curvature altitude via contraction with
+the Riemann curvature tensor.
 
-The curvature envelope operator defines the transition from altitude A7
-(spectral geometry) to altitude A8 (curvature-modulated geometry). Its
-role is to extract a normalized curvature signature from the manifold
-and apply it as a modulation factor to the spectral projection vector.
+\subsection{Curvature Domain}
 
-This section formalizes the curvature envelope, its construction, and
-its stability properties.
+The curvature domain $D_3$ consists of all points $x \in \mathcal{M}$ equipped
+with the Levi-Civita connection $\nabla$ and curvature tensor $R^i_{\ jkl}$.
 
-\subsection{Curvature Tensor}
-
-Given the metric tensor $g_x$ at a point $x \in M$, the Riemann
-curvature tensor is defined by
+Formally:
 \[
-R(u, v)w
-    = \nabla_u \nabla_v w
-    - \nabla_v \nabla_u w
-    - \nabla_{[u,v]} w,
-\]
-where $\nabla$ denotes the Levi-Civita connection associated with $g$.
-The curvature tensor encodes how the manifold deviates from flatness.
-
-\subsection{Curvature Envelope Definition}
-
-The curvature envelope operator extracts a normalized curvature
-signature
-\[
-\kappa(x) \in \mathbb{R}^{80},
-\]
-defined by
-\[
-\kappa_i(x)
-    = \frac{1}{Z}
-      \left(
-        \sum_{j,k}
-        \left| R(e_i, e_j)e_k \right|
-      \right),
-\]
-where $\{e_i\}$ is the standard basis of $\mathbb{R}^{80}$ and $Z$ is a
-normalization constant ensuring
-\[
-\|\kappa(x)\|_\infty \leq 1.
+D_3 = \{ x \in \mathcal{M} \mid R^i_{\ jkl}(x) \text{ is defined and smooth} \}.
 \]
 
-This signature captures the aggregate curvature behavior along each
-coordinate direction.
-
-\subsection{Curvature Modulation}
-
-Given a spectral projection vector $s \in \mathbb{R}^{80}$, the
-curvature-modulated vector is defined as
+Altitude alignment:
 \[
-c = s \odot (1 + \alpha \kappa(x)),
+A7 \leftrightarrow D_3.
 \]
-where $\odot$ denotes elementwise multiplication and $\alpha$ is a
-scaling constant (typically $\alpha = 0.1$ in the Redux runtime).
 
-This modulation incorporates geometric curvature into the spectral
-representation.
+\subsection{Riemann Curvature Tensor}
 
-\subsection{Stability Properties}
-
-Because the curvature tensor depends smoothly on the metric tensor,
-$\kappa(x)$ is a smooth function of $x$. Therefore,
+Recall the definition:
 \[
-\| \kappa(x + \delta x) - \kappa(x) \|
-    \leq C \| \delta G \|,
+R(X,Y)Z = \nabla_X \nabla_Y Z - \nabla_Y \nabla_X Z - \nabla_{[X,Y]} Z.
 \]
-for some constant $C$ depending on the curvature bounds of $M$.
 
-This ensures that curvature modulation does not introduce instability
-into the embedding pipeline.
-
-\subsection{Altitude Interpretation}
-
-The curvature envelope operator lifts the representation from altitude
-A7 (spectral geometry) to altitude A8 (curvature-modulated geometry).
-This transition incorporates geometric information that cannot be
-captured by spectral decomposition alone.
-
-\subsection{Output}
-
-The output of the curvature envelope operator is the modulated vector
+In coordinates:
 \[
-c \in \mathbb{R}^{80},
+R^i_{\ jkl}
+= \partial_k \Gamma^i_{\ jl}
+- \partial_l \Gamma^i_{\ jk}
++ \Gamma^i_{\ km}\Gamma^m_{\ jl}
+- \Gamma^i_{\ lm}\Gamma^m_{\ jk}.
 \]
-which serves as the input to the holonomy transport operator in the
-next stage of the pipeline.
+
+Smoothness assumption:
+\[
+R^i_{\ jkl} \in C^\infty(\mathcal{M}).
+\]
+
+\subsection{Curvature Envelope}
+
+Given the spectral signature
+\[
+s(x) = (\phi_1(x), \dots, \phi_m(x)),
+\]
+define the curvature envelope $c(x)$ by contracting $s(x)$ with the curvature
+tensor.
+
+Formally:
+\[
+c(x) = \Phi_7(s(x))
+= \left( R^i_{\ jkl}(x) \, v^j v^k v^l \right)_{i=1}^{80},
+\]
+where $v$ is the spectral direction:
+\[
+v = \sum_{k=1}^m \phi_k(x) e_k.
+\]
+
+Thus:
+\[
+c_i(x) = R^i_{\ jkl}(x) \, v^j v^k v^l.
+\]
+
+This produces a curvature-modulated vector in $\mathbb{R}^{80}$.
+
+\subsection{Operator Definition}
+
+Formally:
+\[
+\Phi_7 : \mathbb{R}^m \to \mathbb{R}^{80},
+\qquad
+\Phi_7(s(x)) = c(x).
+\]
+
+Altitude alignment:
+\[
+\Phi_7 : A5 \to A7.
+\]
+
+Domain alignment:
+\[
+\Phi_7 : D_2 \to D_3.
+\]
+
+\subsection{Curvature Contraction Identity}
+
+The contraction used by $\Phi_7$ satisfies:
+\[
+c_i = R^i_{\ jkl} v^j v^k v^l
+= \langle R(\cdot, v)v, v \rangle_i.
+\]
+
+This identity is central to the geometric lift from spectral to curvature
+altitude.
+
+\subsection{Curvature Smoothness}
+
+Since $R^i_{\ jkl}$ and $v^j$ are smooth:
+\[
+\Phi_7 \in C^\infty(\mathcal{M}, \mathbb{R}^{80}).
+\]
+
+\subsection{Curvature Stability}
+
+For sufficiently small perturbations of the metric:
+\[
+\| \Delta g \| < \varepsilon
+\quad\Longrightarrow\quad
+\| \Delta R \| < C_1 \varepsilon,
+\quad
+\| \Delta v \| < C_2 \varepsilon,
+\]
+and thus:
+\[
+\| \Delta c(x) \| < C \varepsilon.
+\]
+
+\subsection{Curvature Reversibility}
+
+On the curvature domain $D_3$, the map $\Phi_7$ is injective up to curvature
+symmetry:
+\[
+\Phi_7(s(x)) = \Phi_7(s(x')) \Rightarrow x \sim x'.
+\]
+
+Higher-altitude operators resolve this equivalence.
+
+\subsection{Curvature Monotonicity}
+
+Altitude monotonicity:
+\[
+s(x) \le s(x') \Rightarrow \Phi_7(s(x)) \le \Phi_7(s(x')).
+\]
+
+This follows from the monotonicity of curvature under metric expansion.
+
+\subsection{Operator Role}
+
+The curvature operator provides the second geometric lift in the Redux
+pipeline:
+\[
+s(x) \mapsto c(x),
+\]
+feeding directly into the holonomy operator $\Phi_8$.
+
+This completes the formal development of the curvature operator.
