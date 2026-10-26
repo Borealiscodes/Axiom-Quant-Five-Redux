@@ -16,22 +16,22 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Remove stale manifest
+        run: rm -f Manifest.toml
+
       - name: Set up Julia
         uses: julia-actions/setup-julia@v2
         with:
           version: '1.10'
 
       - name: Instantiate environment
-        run: |
-          julia --project=. -e '
-            import Pkg;
-            Pkg.activate(".");
-            Pkg.instantiate();
-          '
+        run: julia --project=. -e '
+          import Pkg;
+          Pkg.instantiate();
+        '
 
       - name: Run tests
-        run: |
-          julia --project=. -e '
-            import Pkg;
-            Pkg.test();
-          '
+        run: julia --project=. -e '
+          import Pkg;
+          Pkg.test();
+        '
