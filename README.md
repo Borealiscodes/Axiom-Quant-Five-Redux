@@ -1,19 +1,19 @@
 # 🌈 AXIOM‑QUANT‑FIVE‑REDUX
 
-Corrected Threshold Geometry • Soft‑Manifold Embeddings • Lean‑Verified Invariants
+Geometric AI • Soft‑Manifold Embeddings • Lean Verification • Julia Runtime
 
-Welcome to Axiom‑Quant‑Five‑Redux, the altitude‑clean, geometrically coherent, Lean‑verifiable rewrite of the original Axiom Quant Five Threshold Domains.
+https://axiomquant.org/#
 
-https://axiomquant.org/# 
+Axiom‑Quant‑Five‑Redux extends the original Axiom Quant Five Threshold Domains by providing a higher‑altitude geometric framework, soft‑manifold embeddings, and Lean‑verified invariants.  
+Redux preserves the conceptual structure of the five threshold domains while giving them a unified mathematical home inside an 80‑dimensional soft Riemannian manifold.
 
-This project fixes the “phase transitions everywhere!” vibe by giving each domain:
+This repository is designed for researchers working at the intersection of:
 
-- a parent geometry (80D soft Riemannian manifold)  
-- a proper interpretability altitude  
-- a real invariant extraction pipeline  
-- a formal Lean verification layer  
-
-This is the version where the math stops improvising and starts behaving.
+- geometric AI  
+- interpretability altitudes  
+- manifold‑based reasoning  
+- formal verification  
+- and Julia‑based runtime tooling  
 
 ---
 
@@ -34,7 +34,7 @@ Canonical form surfaces • spectral curvature • A7 spectral altitude
 🟫 Rényi Dyadic Threshold
 Entropy drift loops • chaotic holonomy • A8–A10 soft‑manifold altitude
 
-Each domain is embedded into a distinct region of the 80D soft manifold, with Lean‑verified invariants ensuring no false equivalences, no metric violations, and no softmax‑induced hallucinated structure.
+Each domain is embedded into a distinct region of the 80D soft manifold, with Lean‑verified invariants ensuring structural coherence.
 
 ---
 
@@ -48,35 +48,35 @@ The manifold provides:
 - geodesic families for domain adjacency  
 - altitude‑safe invariant extraction  
 
-This is the backbone of the Redux correction.
+This geometric backbone allows threshold phenomena to be expressed without forcing equivalence or violating metric constraints.
 
 ---
 
-📘 Advanced Mathematics Section (Formal Altitude Layer)
+📘 Advanced Mathematics Section
 
-1. Soft Riemannian Manifold Definition
+1. Soft Riemannian Manifold
 
 Let \((\mathcal{M}^{80}, g)\) be an 80‑dimensional soft Riemannian manifold.  
-Softness means:
+Softness ensures:
 
 \[
 \|\Delta g\| < \varepsilon \quad \Rightarrow \quad \text{no topological collapse}
 \]
 
-This allows:
+This supports:
 
-- discontinuous threshold behavior  
 - quantization jumps  
 - volatility regime shifts  
 - entropy bifurcations  
+- connectivity transitions  
 
-to be embedded without metric singularities.
+without singularities.
 
 ---
 
 2. Domain Embeddings
 
-Each threshold domain is embedded via a structural map:
+Each threshold domain is embedded via:
 
 \[
 \iota_{\mathrm{domain}} : \mathcal{D} \hookrightarrow \mathcal{M}^{80}
@@ -84,15 +84,15 @@ Each threshold domain is embedded via a structural map:
 
 Examples:
 
-- Erdős graphs → curvature proportional to component entropy  
-- BitNet ternary → holonomy drift representing rounding dynamics  
-- Markowitz frontier → convexity basins encoded as curvature wells  
-- Black–Scholes → canonical form surfaces embedded as positive geometry  
-- Rényi dyadic → entropy shift loops encoded as holonomy cycles  
+- Erdős → curvature proportional to component entropy  
+- BitNet → holonomy drift representing rounding dynamics  
+- Markowitz → convexity basins encoded as curvature wells  
+- Black–Scholes → canonical form surfaces  
+- Rényi → entropy shift loops  
 
 ---
 
-3. Holonomy & Curvature as Connective Tissue
+3. Holonomy & Curvature
 
 Holonomy transport:
 
@@ -106,19 +106,19 @@ Curvature envelope:
 K(p) = \|R_{ijkl}(p)\|
 \]
 
-These allow adjacency, not equivalence, between domains.
+These provide the connective tissue between domains.
 
 ---
 
 4. Invariant Extraction
 
-Each domain contributes a mathematically legitimate invariant:
+Each domain contributes a structural invariant:
 
-- Graphs → connectivity  
-- BitNet → quantization  
-- Markowitz → convexity  
-- Black–Scholes → canonical form  
-- Rényi → entropy shift  
+- connectivity  
+- quantization  
+- convexity  
+- canonical form  
+- entropy shift  
 
 These invariants live in:
 
@@ -126,49 +126,38 @@ These invariants live in:
 \mathcal{S} = \{\text{connectivity},\ \text{quantization},\ \text{convexity},\ \text{canonical form},\ \text{entropy}\}
 \]
 
-and are Lean‑verified.
+and are formally verified in Lean.
 
 ---
 
-🤖 How AI Actually Works (Altitude‑Correct Explanation)
+🤖 AI Interpretability (Altitude‑Correct Explanation)
 
-AI does not “believe” the original AxiomQuant infographic.  
-It simply softmaxes it.
+AI systems operate primarily at A2–A3, where reasoning is governed by:
 
-Softmax lives at A2–A3, where the model:
+- softmax probability distributions  
+- token ranking  
+- pattern matching  
+- local statistical structure  
 
-- cannot detect geometric inconsistency  
-- cannot detect metric violations  
-- cannot detect altitude drift  
-- cannot detect false equivalences  
-- cannot detect manifold mismatch  
+Softmax cannot represent:
 
-Softmax collapses everything into:
+- manifold geometry  
+- curvature  
+- holonomy  
+- invariant extraction  
+- altitude separation  
 
-\[
-\text{probabilities over tokens}
-\]
+Redux provides the higher‑altitude structure (A8–A10) that AI models cannot infer directly.
 
-It has no concept of geometry.
+This README explains AI behavior at the correct altitude:
 
-Your Redux framework operates at A8–A10, where:
-
-- manifolds exist  
-- curvature matters  
-- holonomy is tracked  
-- invariants are extracted  
-- domains are separated  
-- structure is respected  
-
-This README explains AI at the correct altitude:
-
-> AI is a probability engine, not a geometric reasoner.  
-> Softmax cannot see the manifold.  
-> Redux gives it one.
+> AI is a probability engine.  
+> Redux is a geometric engine.  
+> They complement each other.
 
 ---
 
-📁 Repo Layout (Color‑Tile Annotated)
+📁 Repository Layout (Color‑Tile Annotated)
 
 `
 <pre> 
@@ -201,6 +190,7 @@ Axiom-Quant-Five-Redux/
 │       └── A8_SoftManifold.jl
 │
 ├── 📘 docs/
+│   ├── ROADMAP.md
 │   ├── soft80d-threshold-embedding.tex
 │   └── bill-nye-tile-explainer.md
 │
@@ -218,11 +208,11 @@ Axiom-Quant-Five-Redux/
 ⭐ Bill Nye Tile Says…
 
 > “Kids!  
-> When math doesn’t have a home,  
-> it starts couch‑surfing in other theories.  
+> When math gets a proper home,  
+> it becomes easier to explore.  
 >  
-> Redux gives it a home —  
-> a big, soft, 80‑dimensional one.”
+> Redux gives each domain a room  
+> in a big, soft, 80‑dimensional house.”
 
 ---
 
