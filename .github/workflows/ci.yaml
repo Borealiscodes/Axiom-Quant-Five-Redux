@@ -21,21 +21,17 @@ jobs:
         with:
           version: '1.10'
 
-      - name: Prepare local package
+      - name: Instantiate environment
         run: |
-          echo "Using local Project.toml"
-          cat Project.toml
           julia --project=. -e '
             import Pkg;
             Pkg.activate(".");
             Pkg.instantiate();
-            Pkg.status();
           '
 
-      - name: Run tests (manual)
+      - name: Run tests
         run: |
           julia --project=. -e '
             import Pkg;
-            Pkg.activate(".");
             Pkg.test();
           '
