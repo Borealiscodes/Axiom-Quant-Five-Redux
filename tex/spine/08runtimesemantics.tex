@@ -1,0 +1,99 @@
+\section{Runtime Semantics of the Redux Pipeline}
+
+\subsection{Overview}
+
+The runtime semantics define how the geometric operators introduced in
+previous sections are composed, evaluated, and interpreted within the
+Redux system. Although the implementation may vary across programming
+languages or environments, the semantics presented here are independent
+of any specific runtime and serve as the authoritative mathematical
+description of the pipeline.
+
+Given an input structure $G$, the runtime evaluates the embedding
+pipeline and invariant layer to produce a diagnostic signature
+\[
+\mathcal{I}(G) \in \mathbb{R}^5.
+\]
+
+\subsection{Operator Ordering}
+
+The Redux pipeline is strictly ordered. Let
+\[
+\Phi = (\Phi_1, \Phi_2, \Phi_3, \Phi_4, \Phi_5)
+\]
+denote the sequence of operators:
+\begin{align*}
+\Phi_1 &: \text{Structural normalization (A3)}, \\
+\Phi_2 &: \text{Spectral projection (A5)}, \\
+\Phi_3 &: \text{Curvature modulation (A7)}, \\
+\Phi_4 &: \text{Holonomy transport (A8)}, \\
+\Phi_5 &: \text{Topology modulation (A8)}.
+\end{align*}
+
+The runtime applies these operators in order:
+\[
+e = \Phi_5(\Phi_4(\Phi_3(\Phi_2(\Phi_1(G))))).
+\]
+
+This ordering is fixed and defines the semantics of the pipeline.
+
+\subsection{Reversibility}
+
+Each operator $\Phi_k$ is reversible up to geometric equivalence. That
+is, for each operator there exists an inverse operator
+\[
+\Phi_k^{-1}
+\]
+such that
+\[
+\Phi_k^{-1}(\Phi_k(v)) = v,
+\]
+provided the geometric context is preserved. In practice, reversibility
+is used for diagnostic purposes and ensures that the pipeline does not
+destroy information.
+
+\subsection{Stability Guarantees}
+
+Let $G$ and $G'$ be two input structures with embeddings $e$ and $e'$.
+The runtime satisfies the stability bound
+\[
+\| e - e' \|
+    \leq C \| G - G' \|,
+\]
+for some constant $C$ depending on the geometric bounds of the manifold.
+This ensures that small changes in the input structure produce small
+changes in the embedding.
+
+\subsection{Invariant Evaluation}
+
+Once the embedding $e$ is computed, the runtime evaluates the invariant
+signature
+\[
+\mathcal{I}(e)
+    = \left(
+        I_{\mathrm{conn}}(e),
+        I_{\mathrm{quant}}(e),
+        I_{\mathrm{conv}}(e),
+        I_{\mathrm{canon}}(e),
+        I_{\mathrm{entropy}}(e)
+      \right).
+\]
+
+This signature is the final output of the runtime and provides a
+diagnostic summary of the input structure.
+
+\subsection{Altitude Interpretation}
+
+The runtime semantics complete the altitude ladder by defining how the
+operators are composed and interpreted. The pipeline transitions from
+structural input (A3) to geometric representation (A8) and finally to
+analytical diagnostics (A9).
+
+\subsection{Final Output}
+
+The final output of the Redux runtime is the invariant signature
+\[
+\mathcal{I}(G) \in \mathbb{R}^5,
+\]
+which serves as the basis for downstream analysis, comparison, and
+interpretation.
