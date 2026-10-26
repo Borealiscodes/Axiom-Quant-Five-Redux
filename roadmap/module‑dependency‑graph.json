@@ -1,0 +1,58 @@
+{
+  "modules": {
+    "Manifold80D": {
+      "depends_on": []
+    },
+    "HolonomyField": {
+      "depends_on": ["Manifold80D"]
+    },
+    "CurvatureEnvelope": {
+      "depends_on": ["Manifold80D"]
+    },
+    "Altitude.A3_Mechanistic": {
+      "depends_on": ["Manifold80D"]
+    },
+    "Altitude.A4_FeatureCircuits": {
+      "depends_on": ["Manifold80D", "Altitude.A3_Mechanistic"]
+    },
+    "Altitude.A5_LatentSemantics": {
+      "depends_on": ["Manifold80D", "Altitude.A4_FeatureCircuits"]
+    },
+    "Altitude.A7_Spectral": {
+      "depends_on": ["Manifold80D", "CurvatureEnvelope"]
+    },
+    "Altitude.A8_SoftManifold": {
+      "depends_on": ["Manifold80D", "HolonomyField", "CurvatureEnvelope"]
+    },
+    "ErdosGraph": {
+      "depends_on": ["Manifold80D", "Altitude.A3_Mechanistic"]
+    },
+    "BitNetTernary": {
+      "depends_on": ["Manifold80D", "Altitude.A4_FeatureCircuits"]
+    },
+    "MarkowitzFrontier": {
+      "depends_on": ["Manifold80D", "Altitude.A5_LatentSemantics"]
+    },
+    "BlackScholesVol": {
+      "depends_on": ["Manifold80D", "Altitude.A7_Spectral"]
+    },
+    "RenyiDyadic": {
+      "depends_on": ["Manifold80D", "Altitude.A8_SoftManifold"]
+    },
+    "Invariants.ConnectivityInvariant": {
+      "depends_on": ["ErdosGraph"]
+    },
+    "Invariants.QuantizationInvariant": {
+      "depends_on": ["BitNetTernary"]
+    },
+    "Invariants.ConvexityInvariant": {
+      "depends_on": ["MarkowitzFrontier"]
+    },
+    "Invariants.CanonicalFormInvariant": {
+      "depends_on": ["BlackScholesVol"]
+    },
+    "Invariants.EntropyShiftInvariant": {
+      "depends_on": ["RenyiDyadic"]
+    }
+  }
+}
