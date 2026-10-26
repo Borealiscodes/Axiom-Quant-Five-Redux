@@ -8,9 +8,3 @@ LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 
 [compat]
 julia = "1.9"
-
-[extras]
-Test = "8dfed614-57f6-562d-9aa2-3b7b0d0f5b4c"
-
-[targets]
-test = ["Test"]
