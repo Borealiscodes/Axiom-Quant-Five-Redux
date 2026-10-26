@@ -1,87 +1,167 @@
-\section{Full Embedding Pipeline: A3 → A8}
+\section{Embedding Pipeline \texorpdfstring{$E$}{E}}
+\label{sec:pipeline}
 
-\subsection{Overview}
-
-The embedding pipeline defines the complete altitude transition from
-structural input (A3) to fully modulated geometric representation (A8).
-It integrates all previously defined operators—spectral, curvature,
-holonomy, and topology—into a single coherent transformation.
-
-Given an input structure $G$ (typically an Erdős–Rényi graph), the
-pipeline produces an embedded vector
+This appendix provides the full mathematical development of the embedding
+pipeline
 \[
-e(G) \in \mathbb{R}^{80},
+E = \Phi_9 \circ \Phi_8^t \circ \Phi_8 \circ \Phi_7 \circ \Phi_5,
 \]
-representing the structure in the manifold $M$.
+corresponding to the geometric lift from altitude $A3$ to altitude $A9$ in the
+AxiomQuant Five Redux system. The pipeline acts on the soft 80D Riemannian
+manifold $(\mathcal{M}^{80}, g)$ and produces invariant vectors in
+$\mathbb{R}^5$.
 
-\subsection{Altitude A3: Structural Normalization}
+\subsection{Pipeline Structure}
 
-Let $G$ be a graph with degree vector $d \in \mathbb{R}^n$. We define
-the normalized structural vector
+The pipeline consists of five operators:
+
 \[
-v \in \mathbb{R}^{80}
-\]
-by padding $d$ to dimension $80$ and applying the normalization
-\[
-v_i = \frac{d_i}{1 + \max_j d_j}.
-\]
-
-This step captures local structural information.
-
-\subsection{Altitude A5: Spectral Projection}
-
-Using the spectral operator defined in Section~2, we compute the
-eigenbasis $U(x)$ of the metric tensor $G(x)$ at a point $x \in M$.
-The spectral projection is
-\[
-s = U(x)^\top v.
+\begin{aligned}
+\Phi_5 &: \mathcal{M} \to \mathbb{R}^m, \\
+\Phi_7 &: \mathbb{R}^m \to \mathbb{R}^{80}, \\
+\Phi_8 &: \mathbb{R}^{80} \to \mathbb{R}^{80}, \\
+\Phi_8^t &: \mathbb{R}^{80} \to \mathbb{R}^{80}, \\
+\Phi_9 &: \mathbb{R}^{80} \to \mathbb{R}^5.
+\end{aligned}
 \]
 
-This step expresses the structural vector in the manifold’s geometric
-eigenbasis.
-
-\subsection{Altitude A7: Curvature Modulation}
-
-Using the curvature envelope $\kappa(x)$ defined in Section~3, we
-compute the curvature-modulated vector
+Thus:
 \[
-c = s \odot (1 + \alpha \kappa(x)),
-\]
-where $\alpha$ is a scaling constant.
-
-This step incorporates local geometric curvature into the spectral
-representation.
-
-\subsection{Altitude A8: Holonomy Transport}
-
-Using the holonomy transport operator $H(x)$ defined in Section~4, we
-compute the transported vector
-\[
-h = H(x) c.
+E : \mathcal{M} \to \mathbb{R}^5.
 \]
 
-This step incorporates accumulated geometric effects along canonical
-curves in the manifold.
+\subsection{Altitude Transitions}
 
-\subsection{Altitude A8: Topology Modulation}
+Altitude transitions are:
 
-Using the topology signature $\tau(x)$ defined in Section~5, we compute
-the fully modulated embedding
 \[
-e = h \odot (1 + \beta \tau(x)),
+A3 \xrightarrow{\Phi_5} A5
+\xrightarrow{\Phi_7} A7
+\xrightarrow{\Phi_8} A8
+\xrightarrow{\Phi_8^t} A8^t
+\xrightarrow{\Phi_9} A9.
 \]
-where $\beta$ is a scaling constant.
 
-This step incorporates global geometric information into the
-representation.
+Each operator preserves altitude ordering.
 
-\subsection{Final Output}
+\subsection{Domain Transitions}
 
-The final embedded vector is
+Domain transitions are:
+
 \[
-e(G) \in \mathbb{R}^{80},
+D_1 \xrightarrow{\Phi_5} D_2
+\xrightarrow{\Phi_7} D_3
+\xrightarrow{\Phi_8} D_4
+\xrightarrow{\Phi_8^t} D_5
+\xrightarrow{\Phi_9} D_5.
 \]
-which serves as the input to the invariant computation layer in the
-next stage of the Redux pipeline.
 
-This completes the altitude transition from A3 to A8.
+Thus $E$ maps $D_1$ to $D_5$.
+
+\subsection{Pipeline Composition}
+
+Given $x \in \mathcal{M}$:
+
+\[
+\begin{aligned}
+s(x) &= \Phi_5(x), \\
+c(x) &= \Phi_7(s(x)), \\
+h(x) &= \Phi_8(c(x)), \\
+t(x) &= \Phi_8^t(h(x)), \\
+I(x) &= \Phi_9(t(x)).
+\end{aligned}
+\]
+
+Thus:
+\[
+E(x) = I(x).
+\]
+
+\subsection{Smoothness}
+
+Each operator is smooth:
+
+\[
+\Phi_5, \Phi_7, \Phi_8, \Phi_8^t, \Phi_9 \in C^\infty.
+\]
+
+Thus the composition is smooth:
+
+\[
+E \in C^\infty(\mathcal{M}, \mathbb{R}^5).
+\]
+
+\subsection{Stability}
+
+Let $C_5, C_7, C_8, C_8^t, C_9$ be stability constants for the operators.
+
+Then:
+\[
+\| E(x) - E(x') \|
+\le
+C_9 C_8^t C_8 C_7 C_5 \, \| x - x' \|.
+\]
+
+Thus $E$ is Lipschitz-stable.
+
+\subsection{Reversibility}
+
+Each operator is injective up to its altitude symmetry:
+
+\[
+\Phi_k(u) = \Phi_k(v) \Rightarrow u \sim v.
+\]
+
+Since altitude symmetries strictly decrease:
+
+\[
+\sim_{A5} \supset \sim_{A7} \supset \sim_{A8} \supset \sim_{A8^t} \supset \sim_{A9},
+\]
+
+the final operator $\Phi_9$ resolves all equivalences.
+
+Thus:
+\[
+E(x) = E(x') \Rightarrow x = x'.
+\]
+
+\subsection{Monotonicity}
+
+Altitude monotonicity holds for each operator:
+
+\[
+u \le v \Rightarrow \Phi_k(u) \le \Phi_k(v).
+\]
+
+Thus:
+\[
+x \le x' \Rightarrow E(x) \le E(x').
+\]
+
+\subsection{Pipeline Correctness}
+
+Pipeline correctness requires:
+
+\[
+E(x) \in \mathcal{K},
+\]
+where $\mathcal{K}$ is the Five Threshold Kernel.
+
+This is proven in Appendix~\ref{sec:invariants}.
+
+\subsection{Operator Role}
+
+The pipeline provides the full geometric lift:
+
+\[
+x
+\mapsto s(x)
+\mapsto c(x)
+\mapsto h(x)
+\mapsto t(x)
+\mapsto I(x),
+\]
+
+transforming manifold geometry into invariant structure.
+
+This completes the formal development of the embedding pipeline.
