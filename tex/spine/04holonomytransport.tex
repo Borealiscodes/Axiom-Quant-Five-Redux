@@ -1,0 +1,101 @@
+\section{Holonomy Transport Operator}
+
+\subsection{Overview}
+
+The holonomy transport operator defines the continuation of altitude A8
+by incorporating the manifold's connection structure into the embedding
+pipeline. Whereas the curvature envelope modulates the spectral
+projection using local geometric information, holonomy transport
+captures the accumulated geometric effect of moving through the
+manifold.
+
+This section formalizes holonomy transport, its construction, and its
+role in the Redux geometric pipeline.
+
+\subsection{Levi-Civita Connection}
+
+Given the metric tensor $g$ on the manifold $M$, the Levi-Civita
+connection $\nabla$ is uniquely defined by the properties of being
+torsion-free and metric-compatible:
+\[
+\nabla_u v - \nabla_v u = [u, v],
+\]
+\[
+u(g(v, w)) = g(\nabla_u v, w) + g(v, \nabla_u w).
+\]
+
+The connection determines how vectors are transported along curves in
+the manifold.
+
+\subsection{Parallel Transport}
+
+Let $\gamma : [0,1] \to M$ be a smooth curve. A vector field $V(t)$
+along $\gamma$ is said to be parallel if
+\[
+\nabla_{\dot{\gamma}(t)} V(t) = 0.
+\]
+
+Parallel transport defines a linear map
+\[
+P_{\gamma} : T_{\gamma(0)} M \to T_{\gamma(1)} M,
+\]
+which preserves inner products and encodes the geometric effect of
+moving along $\gamma$.
+
+\subsection{Holonomy Group}
+
+The holonomy group at a point $x \in M$ is defined as
+\[
+\mathrm{Hol}(x)
+    = \{ P_{\gamma} \mid \gamma \text{ is a loop based at } x \}.
+\]
+
+This group captures the accumulated curvature of the manifold. In
+particular, if the manifold is flat, the holonomy group is trivial.
+
+\subsection{Holonomy Transport Operator}
+
+Given a curvature-modulated vector $c \in \mathbb{R}^{80}$ and a point
+$x \in M$, the holonomy transport operator is defined as
+\[
+h = P_{\gamma_x}(c),
+\]
+where $\gamma_x$ is a canonical curve determined by the manifold's
+geometry. In the Redux runtime, this curve is chosen to reflect the
+local geometric structure encoded in the metric tensor.
+
+The operator $P_{\gamma_x}$ is represented by an orthogonal matrix
+\[
+H(x) \in \mathrm{O}(80),
+\]
+so that
+\[
+h = H(x) c.
+\]
+
+\subsection{Stability Properties}
+
+Because parallel transport depends smoothly on the connection, we have
+\[
+\| H(x + \delta x) - H(x) \|
+    \leq C \| \delta G \|,
+\]
+for some constant $C$ depending on curvature bounds. This ensures that
+holonomy transport does not introduce instability into the embedding
+pipeline.
+
+\subsection{Altitude Interpretation}
+
+Holonomy transport completes the geometric modulation at altitude A8 by
+incorporating the manifold's connection structure. Whereas curvature
+envelope captures local geometric behavior, holonomy transport captures
+the accumulated geometric effect of moving through the manifold.
+
+\subsection{Output}
+
+The output of the holonomy transport operator is the transported vector
+\[
+h \in \mathbb{R}^{80},
+\]
+which serves as the input to the topology modulation operator in the
+next stage of the pipeline.
