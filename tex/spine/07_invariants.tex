@@ -1,0 +1,104 @@
+\section{Invariant Computation Layer}
+
+\subsection{Overview}
+
+The invariant computation layer defines altitude A9, where geometric
+representations are mapped to scalar quantities that summarize global
+behavior. Given an embedded vector
+\[
+e \in \mathbb{R}^{80},
+\]
+the invariants extract structural, geometric, and informational
+properties that remain stable under the transformations defined in
+previous sections.
+
+Each invariant is a function
+\[
+I_k : \mathbb{R}^{80} \to \mathbb{R},
+\]
+and the collection of invariants forms a diagnostic signature for the
+input structure.
+
+\subsection{Connectivity Invariant}
+
+The connectivity invariant measures the aggregate connectivity encoded
+in the embedding. One possible definition is
+\[
+I_{\mathrm{conn}}(e)
+    = \sum_{i=1}^{80} |e_i|.
+\]
+
+This invariant reflects the overall magnitude of the embedding and
+correlates with the density of the original graph.
+
+\subsection{Quantization Invariant}
+
+The quantization invariant measures the discretization behavior of the
+embedding. Define
+\[
+I_{\mathrm{quant}}(e)
+    = \sum_{i=1}^{80} \left| e_i - \lfloor e_i \rfloor \right|.
+\]
+
+This invariant captures how far the embedding deviates from integer
+structure, which is relevant for symbolic domains.
+
+\subsection{Convexity Invariant}
+
+The convexity invariant measures the curvature-induced convexity of the
+embedding. Define
+\[
+I_{\mathrm{conv}}(e)
+    = \sum_{i=1}^{80} \max(0, e_i).
+\]
+
+This invariant reflects the proportion of the embedding lying in the
+positive orthant, which correlates with geometric convexity.
+
+\subsection{Canonical Form Invariant}
+
+The canonical form invariant measures the alignment of the embedding
+with a canonical direction. Let $u \in \mathbb{R}^{80}$ be a fixed
+reference vector. Define
+\[
+I_{\mathrm{canon}}(e)
+    = \frac{e^\top u}{\|e\| \|u\|}.
+\]
+
+This invariant captures directional alignment and is useful for
+normalizing embeddings across different domains.
+
+\subsection{Entropy Shift Invariant}
+
+The entropy shift invariant measures the informational complexity of the
+embedding. Define
+\[
+I_{\mathrm{entropy}}(e)
+    = - \sum_{i=1}^{80}
+        p_i \log p_i,
+\]
+where
+\[
+p_i = \frac{|e_i|}{\sum_j |e_j|}.
+\]
+
+This invariant reflects how evenly distributed the embedding is across
+its coordinates.
+
+\subsection{Invariant Signature}
+
+The invariant signature of an embedded vector $e$ is the tuple
+\[
+\mathcal{I}(e)
+    = \left(
+        I_{\mathrm{conn}}(e),
+        I_{\mathrm{quant}}(e),
+        I_{\mathrm{conv}}(e),
+        I_{\mathrm{canon}}(e),
+        I_{\mathrm{entropy}}(e)
+      \right).
+\]
+
+This signature provides a stable, altitude-independent summary of the
+input structure and serves as the basis for downstream analysis in the
+Redux runtime.
