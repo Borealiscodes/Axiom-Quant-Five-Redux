@@ -1,55 +1,91 @@
 module A7_Spectral
 
-using ..CurvatureEnvelope
-using ..A5_LatentSemantics
-export A7State, validate_spectral_input, route_to_A7
+export route_to_A7, spectral_decomposition, spectral_energy
+
+using LinearAlgebra
+using ..Manifold80D
+
+# ============================================================
+#  Altitude Routing
+# ============================================================
 
 """
-    A7State
+    route_to_A7(v, M)
 
-Represents the spectral altitude context.
-This altitude focuses on curvature-aware operators, canonical forms,
-and spectral geometry derived from the curvature envelope.
+Altitude A7 routing: validates that the input vector v ∈ ℝ⁸⁰
+is compatible with spectral geometry on the soft manifold M.
+
+Checks:
+- dimension consistency
+- metric positivity
+- curvature envelope bounds
 """
-struct A7State
-    altitude::Int
-    allowed_ops::Vector{Symbol}
-    curvature_envelope::Vector{Float64}
-end
-
-
-"""
-    validate_spectral_input(x)
-
-Ensures that inputs conform to A7 constraints:
-- must satisfy A5 latent-semantic constraints
-- must be compatible with curvature envelope structure
-- spectral operators allowed, but not full manifold holonomy
-"""
-function validate_spectral_input(x)
-    # First ensure A5 constraints are satisfied
-    if !A5_LatentSemantics.validate_latent_input(x)
-        return false
+function route_to_A7(v::Vector{Float64}, M::Manifold80D.SoftManifold80D)
+    if length(v) != M.dim
+        error("A7 routing error: vector dimension mismatch.")
     end
 
-    # Placeholder: real version checks spectral compatibility
+    # Metric positivity check
+    if minimum(diag(M.metric)) <= 0
+        error("A7 routing error: manifold metric is not positive-definite.")
+    end
+
+    # Curvature envelope sanity
+    if maximum(abs.(M.curvature)) > 5.0
+        error("A7 routing error: curvature envelope exceeds safe bounds.")
+    end
+
     return true
 end
 
 
-"""
-    route_to_A7(x, M)
+# ============================================================
+#  Spectral Decomposition
+# ============================================================
 
-Routes data into the A7 altitude context.
-Requires curvature envelope from the manifold.
 """
-function route_to_A7(x, M)
-    if validate_spectral_input(x)
-        CE = CurvatureEnvelope.compute_curvature_envelope(M)
-        return A7State(7, [:spectral, :canonical, :curvature], CE.envelope)
-    else
-        error("Input violates A7 altitude constraints.")
-    end
+    spectral_decomposition(M)
+
+Computes a spectral decomposition of the soft manifold metric.
+
+Returns:
+- eigenvalues λ ∈ ℝ⁸⁰
+- eigenvectors U ∈ ℝ⁸⁰ˣ⁸⁰
+
+Altitude: A7.
+"""
+function spectral_decomposition(M::Manifold80D.SoftManifold80D)
+    λ, U = eigen(M.metric)
+    return λ, U
+end
+
+
+# ============================================================
+#  Spectral Energy
+# ============================================================
+
+"""
+    spectral_energy(v, M)
+
+Computes the spectral energy of a vector v ∈ ℝ⁸⁰ under the
+manifold metric:
+
+    E(v) = ∑ λᵢ (uᵢᵀ v)²
+
+where (λᵢ, uᵢ) are eigenpairs of the metric.
+
+Altitude: A7.
+"""
+function spectral_energy(v::Vector{Float64}, M::Manifold80D.SoftManifold80D)
+    route_to_A7(v, M)
+
+    λ, U = spectral_decomposition(M)
+
+    # Project v onto eigenbasis
+    coeffs = U' * v
+
+    # Weighted energy
+    return sum(λ .* (coeffs .^ 2))
 end
 
 end # module
