@@ -1,0 +1,171 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+\usepackage{mathtools}
+\usepackage{hyperref}
+
+\title{AxiomQuant Five Redux:\\
+Canonical Mathematical Spine and Operator Geometry}
+\author{Borealis S. Hedling}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Abstract}
+This document provides the canonical mathematical specification for the
+AxiomQuant Five Redux system. It defines the soft 80-dimensional Riemannian
+manifold underlying the operator chain, the Redux altitude ladder, the five
+Redux domains, the geometric operators $\Phi_5, \Phi_7, \Phi_8, \Phi_8^t,
+\Phi_9$, the full embedding pipeline, the Five Threshold Kernel, and the
+verification axioms (stability, reversibility, monotonicity, smoothness,
+invariant correctness). This spine serves as the mathematical contract for the
+Lean formalization and the Julia runtime.
+
+\section{Soft 80D Riemannian Manifold}
+Let $(\mathcal{M}^{80}, g)$ be a smooth Riemannian manifold of dimension $80$.
+We assume:
+\begin{enumerate}
+    \item $g$ is $C^\infty$.
+    \item The Levi-Civita connection $\nabla$ exists and is smooth.
+    \item The curvature tensor $R^i_{\ jkl}(x)$ is smooth.
+    \item The holonomy field $H(x) \in \mathrm{SO}(80)$ is smooth.
+    \item The topology signature $\tau(x) \in \mathbb{R}^{80}$ is smooth.
+\end{enumerate}
+
+Softness condition:
+\[
+\| \Delta g \| < \varepsilon \quad \Rightarrow \quad
+\text{no topological collapse occurs}.
+\]
+
+\section{Redux Altitude Ladder}
+We define altitudes:
+\[
+A3 < A5 < A7 < A8 < A9.
+\]
+Altitude transitions:
+\[
+A3 \to A5,\quad A5 \to A7,\quad A7 \to A8,\quad A8 \to A9.
+\]
+
+\section{Redux Domains}
+We define domains:
+\[
+D_1 \to D_2 \to D_3 \to D_4 \to D_5,
+\]
+corresponding to:
+\[
+\text{structural},\ \text{spectral},\ \text{curvature},\ 
+\text{holonomy},\ \text{topology/invariant}.
+\]
+
+\section{Operator Chain}
+We define five operators acting on $\mathcal{M}^{80}$.
+
+\subsection{Spectral Operator $\Phi_5$}
+Altitude: $A5$.
+Domain: $D_2$.
+
+Given $x \in \mathcal{M}^{80}$, define:
+\[
+s(x) = \Phi_5(x),
+\]
+where $s(x)$ is the spectral projection of $x$ under the metric $g$.
+
+\subsection{Curvature Operator $\Phi_7$}
+Altitude: $A7$.
+Domain: $D_3$.
+
+Given $s(x)$, define:
+\[
+c(x) = \Phi_7(s(x)) = R(x) \cdot s(x),
+\]
+where $R(x)$ is the curvature tensor.
+
+\subsection{Holonomy Operator $\Phi_8$}
+Altitude: $A8$.
+Domain: $D_4$.
+
+Given $c(x)$, define:
+\[
+h(x) = \Phi_8(c(x)) = H(x) \cdot c(x),
+\]
+where $H(x)$ is the holonomy field.
+
+\subsection{Topology Operator $\Phi_8^t$}
+Altitude: $A8$.
+Domain: $D_5$.
+
+Given $h(x)$, define:
+\[
+t(x) = \Phi_8^t(h(x)) = h(x) + \tau(x),
+\]
+where $\tau(x)$ is the topology signature.
+
+\subsection{Invariant Operator $\Phi_9$}
+Altitude: $A9$.
+Domain: $D_5$.
+
+Given $t(x)$, define invariants:
+\[
+I(x) = \Phi_9(t(x)) =
+\bigl( C_{\text{conn}}, Q_{\text{tern}}, V_{\text{conv}},
+F_{\text{canon}}, S_{\text{entropy}} \bigr).
+\]
+
+\section{Full Embedding Pipeline}
+Define:
+\[
+E = \Phi_9 \circ \Phi_8^t \circ \Phi_8 \circ \Phi_7 \circ \Phi_5.
+\]
+Thus:
+\[
+E(x) = I(x).
+\]
+
+\section{Five Threshold Kernel}
+The invariant layer consists of:
+\[
+\mathcal{K} =
+\left\{
+C_{\text{conn}},\ 
+Q_{\text{tern}},\ 
+V_{\text{conv}},\ 
+F_{\text{canon}},\ 
+S_{\text{entropy}}
+\right\}.
+\]
+
+\section{Verification Axioms}
+We define five verification predicates.
+
+\subsection{Stability}
+There exists $C > 0$ such that:
+\[
+\| E(x) - E(x') \| \le C \| x - x' \|.
+\]
+
+\subsection{Reversibility}
+Pipeline is injective on altitude domain:
+\[
+E(x) = E(x') \Rightarrow x = x'.
+\]
+
+\subsection{Monotonicity}
+Altitude ordering preserved:
+\[
+x \le x' \Rightarrow E(x) \le E(x').
+\]
+
+\subsection{Smoothness}
+$E : \mathcal{M}^{80} \to \mathbb{R}^5$ is smooth.
+
+\subsection{Invariant Correctness}
+$I(x)$ matches the Five Threshold Kernel.
+
+\section{Conclusion}
+This spine defines the canonical mathematical structure of the AxiomQuant Five
+Redux system. It serves as the authoritative specification for the Lean
+formalization and the Julia runtime.
+
+\end{document}
