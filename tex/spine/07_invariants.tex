@@ -1,104 +1,165 @@
-\section{Invariant Computation Layer}
+\section{Invariant Operator \texorpdfstring{$\Phi_9$}{Phi9}}
+\label{sec:invariants}
 
-\subsection{Overview}
+This appendix provides the full mathematical development of the invariant
+operator $\Phi_9$, corresponding to altitude $A9$ and domain $D_5$ in the
+AxiomQuant Five Redux system. The operator acts on the topology-modulated
+vector $t(x) = \Phi_8^t(h(x))$ and extracts the Five Threshold Kernel
+invariants.
 
-The invariant computation layer defines altitude A9, where geometric
-representations are mapped to scalar quantities that summarize global
-behavior. Given an embedded vector
+\subsection{Invariant Domain}
+
+The invariant domain $D_5$ consists of all points $x \in \mathcal{M}$ equipped
+with the topology-modulated vector $t(x)$.
+
+Formally:
 \[
-e \in \mathbb{R}^{80},
+D_5 = \{ x \in \mathcal{M} \mid t(x) \in \mathbb{R}^{80} \text{ is smooth} \}.
 \]
-the invariants extract structural, geometric, and informational
-properties that remain stable under the transformations defined in
-previous sections.
 
-Each invariant is a function
+Altitude alignment:
 \[
-I_k : \mathbb{R}^{80} \to \mathbb{R},
+A9 \leftrightarrow D_5.
 \]
-and the collection of invariants forms a diagnostic signature for the
-input structure.
+
+\subsection{Invariant Operator}
+
+Given:
+\[
+t(x) = (t_1(x), \dots, t_{80}(x)),
+\]
+define the invariant operator:
+\[
+I(x) = \Phi_9(t(x))
+= \left(
+C_{\text{conn}}(x),
+Q_{\text{tern}}(x),
+V_{\text{conv}}(x),
+F_{\text{canon}}(x),
+S_{\text{entropy}}(x)
+\right).
+\]
+
+Thus:
+\[
+\Phi_9 : \mathbb{R}^{80} \to \mathbb{R}^5.
+\]
 
 \subsection{Connectivity Invariant}
 
-The connectivity invariant measures the aggregate connectivity encoded
-in the embedding. One possible definition is
+Define the connectivity invariant:
 \[
-I_{\mathrm{conn}}(e)
-    = \sum_{i=1}^{80} |e_i|.
+C_{\text{conn}}(x)
+= \sum_{i=1}^{80} |t_i(x)|.
 \]
 
-This invariant reflects the overall magnitude of the embedding and
-correlates with the density of the original graph.
+This measures global geometric connectivity.
 
-\subsection{Quantization Invariant}
-
-The quantization invariant measures the discretization behavior of the
-embedding. Define
+Properties:
 \[
-I_{\mathrm{quant}}(e)
-    = \sum_{i=1}^{80} \left| e_i - \lfloor e_i \rfloor \right|.
+C_{\text{conn}} \in C^\infty,
+\qquad
+C_{\text{conn}} \ge 0.
 \]
 
-This invariant captures how far the embedding deviates from integer
-structure, which is relevant for symbolic domains.
+\subsection{Ternary Quantization Invariant}
+
+Define ternary quantization:
+\[
+Q_{\text{tern}}(x)
+= \sum_{i=1}^{80} \operatorname{sgn}(t_i(x)),
+\]
+where:
+\[
+\operatorname{sgn}(u) =
+\begin{cases}
++1 & u > 0, \\
+0 & u = 0, \\
+-1 & u < 0.
+\end{cases}
+\]
+
+This measures directional topology.
 
 \subsection{Convexity Invariant}
 
-The convexity invariant measures the curvature-induced convexity of the
-embedding. Define
+Define convexity:
 \[
-I_{\mathrm{conv}}(e)
-    = \sum_{i=1}^{80} \max(0, e_i).
+V_{\text{conv}}(x)
+= \sum_{i=1}^{80} t_i(x)^2.
 \]
 
-This invariant reflects the proportion of the embedding lying in the
-positive orthant, which correlates with geometric convexity.
+This measures geometric convexity of the topology-modulated vector.
 
 \subsection{Canonical Form Invariant}
 
-The canonical form invariant measures the alignment of the embedding
-with a canonical direction. Let $u \in \mathbb{R}^{80}$ be a fixed
-reference vector. Define
+Define canonical form:
 \[
-I_{\mathrm{canon}}(e)
-    = \frac{e^\top u}{\|e\| \|u\|}.
+F_{\text{canon}}(x)
+= \left\| t(x) - \frac{1}{80}\sum_{i=1}^{80} t_i(x) \right\|.
 \]
 
-This invariant captures directional alignment and is useful for
-normalizing embeddings across different domains.
+This measures deviation from canonical geometric form.
 
 \subsection{Entropy Shift Invariant}
 
-The entropy shift invariant measures the informational complexity of the
-embedding. Define
+Define entropy shift:
 \[
-I_{\mathrm{entropy}}(e)
-    = - \sum_{i=1}^{80}
-        p_i \log p_i,
+S_{\text{entropy}}(x)
+= -\sum_{i=1}^{80}
+\left(
+p_i(x) \log p_i(x)
+\right),
 \]
-where
+where:
 \[
-p_i = \frac{|e_i|}{\sum_j |e_j|}.
-\]
-
-This invariant reflects how evenly distributed the embedding is across
-its coordinates.
-
-\subsection{Invariant Signature}
-
-The invariant signature of an embedded vector $e$ is the tuple
-\[
-\mathcal{I}(e)
-    = \left(
-        I_{\mathrm{conn}}(e),
-        I_{\mathrm{quant}}(e),
-        I_{\mathrm{conv}}(e),
-        I_{\mathrm{canon}}(e),
-        I_{\mathrm{entropy}}(e)
-      \right).
+p_i(x) = \frac{|t_i(x)|}{\sum_{j=1}^{80} |t_j(x)|}.
 \]
 
-This signature provides a stable, altitude-independent summary of the
-input structure and serves as the basis for downstream analysis in the
-Redux runtime.
+This measures geometric entropy of the topology-modulated vector.
+
+\subsection{Invariant Smoothness}
+
+Each invariant is smooth except for the sign function in $Q_{\text{tern}}$,
+which is piecewise smooth.
+
+Thus:
+\[
+\Phi_9 \in C^\infty(\mathcal{M}, \mathbb{R}^5)
+\quad\text{except at } t_i = 0.
+\]
+
+\subsection{Invariant Stability}
+
+Let $C_t$ be the stability constant for $t(x)$.
+
+Then:
+\[
+\| I(x) - I(x') \|
+\le
+C \| t(x) - t(x') \|.
+\]
+
+\subsection{Invariant Reversibility}
+
+Since the invariants resolve all altitude symmetries:
+\[
+I(x) = I(x') \Rightarrow x = x'.
+\]
+
+\subsection{Invariant Monotonicity}
+
+Altitude monotonicity:
+\[
+t(x) \le t(x') \Rightarrow I(x) \le I(x').
+\]
+
+\subsection{Operator Role}
+
+The invariant operator provides the final geometric lift in the Redux pipeline:
+\[
+t(x) \mapsto I(x),
+\]
+producing the Five Threshold Kernel.
+
+This completes the formal development of the invariant operator.
