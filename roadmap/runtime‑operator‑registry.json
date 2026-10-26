@@ -1,0 +1,70 @@
+{
+  "operators": {
+    "manifold": {
+      "soft_metric_update": {
+        "altitude": "A8-A10",
+        "depends_on": ["Manifold80D"]
+      },
+      "geodesic_trace": {
+        "altitude": "A8-A10",
+        "depends_on": ["Manifold80D"]
+      }
+    },
+    "curvature": {
+      "compute_curvature_envelope": {
+        "altitude": "A7-A10",
+        "depends_on": ["CurvatureEnvelope"]
+      }
+    },
+    "holonomy": {
+      "holonomy_transport": {
+        "altitude": "A8-A10",
+        "depends_on": ["HolonomyField"]
+      }
+    },
+    "domains": {
+      "embed_erdos_graph": {
+        "altitude": "A3",
+        "depends_on": ["ErdosGraph"]
+      },
+      "embed_bitnet": {
+        "altitude": "A4-A5",
+        "depends_on": ["BitNetTernary"]
+      },
+      "embed_markowitz": {
+        "altitude": "A5",
+        "depends_on": ["MarkowitzFrontier"]
+      },
+      "embed_blackscholes": {
+        "altitude": "A7",
+        "depends_on": ["BlackScholesVol"]
+      },
+      "embed_renyi": {
+        "altitude": "A8-A10",
+        "depends_on": ["RenyiDyadic"]
+      }
+    },
+    "invariants": {
+      "extract_connectivity": {
+        "altitude": "A3",
+        "depends_on": ["Invariants.ConnectivityInvariant"]
+      },
+      "extract_quantization": {
+        "altitude": "A4-A5",
+        "depends_on": ["Invariants.QuantizationInvariant"]
+      },
+      "extract_convexity": {
+        "altitude": "A5",
+        "depends_on": ["Invariants.ConvexityInvariant"]
+      },
+      "extract_canonical_form": {
+        "altitude": "A7",
+        "depends_on": ["Invariants.CanonicalFormInvariant"]
+      },
+      "extract_entropy_shift": {
+        "altitude": "A8-A10",
+        "depends_on": ["Invariants.EntropyShiftInvariant"]
+      }
+    }
+  }
+}
