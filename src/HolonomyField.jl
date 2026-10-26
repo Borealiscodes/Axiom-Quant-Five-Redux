@@ -1,58 +1,91 @@
 module HolonomyField
 
+export compute_connection_form, holonomy_transport, holonomy_energy
+
+using LinearAlgebra
 using ..Manifold80D
-export HolonomyState, compute_connection_form, holonomy_transport
+
+# ============================================================
+#  Connection Form (Holonomy Generator)
+# ============================================================
 
 """
-    HolonomyState
+    compute_connection_form(M)
 
-Container for holonomy-related geometric quantities.
-The connection form ω encodes how vectors rotate when transported along curves.
+Computes a discrete connection form ω ∈ ℝ⁸⁰ that approximates
+parallel transport drift across the soft manifold.
+
+Uses antisymmetric finite differences of the metric diagonal.
+
+Altitude: A8.
 """
-struct HolonomyState
-    connection_form::Array{Float64,3}   # ω_i_jk placeholder
-    drift_field::Vector{Float64}        # holonomy-induced drift per dimension
+function compute_connection_form(M::Manifold80D.SoftManifold80D)
+    dim = M.dim
+    diag_metric = diag(M.metric)
+
+    ω = zeros(Float64, dim)
+
+    # Antisymmetric transport proxy
+    for i in 1:(dim-1)
+        ω[i] = diag_metric[i+1] - diag_metric[i]
+    end
+
+    # Normalize
+    ω .= ω ./ (1 .+ abs.(ω))
+
+    return ω
 end
 
 
+# ============================================================
+#  Holonomy Transport Operator
+# ============================================================
+
 """
-    compute_connection_form(M::SoftManifold80D)
+    holonomy_transport(v, M)
 
-Computes a placeholder connection form for the manifold.
-Later versions will derive ω from the metric via Christoffel symbols.
+Applies holonomy transport to a vector v ∈ ℝ⁸⁰:
+
+    T(v) = v + ε * ω
+
+where ω is the connection form and ε is a small transport scale.
+
+Altitude: A7/A8.
 """
-function compute_connection_form(M::SoftManifold80D)
-    dim = M.dim
-
-    # Placeholder ω_i_jk tensor (dim x dim x dim)
-    connection_form = zeros(Float64, dim, dim, dim)
-
-    # Drift field: simple placeholder norm of ω
-    drift_field = zeros(Float64, dim)
-    for i in 1:dim
-        drift_field[i] = sum(abs, connection_form[i, :, :])
+function holonomy_transport(v::Vector{Float64}, M::Manifold80D.SoftManifold80D)
+    if length(v) != M.dim
+        error("Holonomy transport error: vector dimension mismatch.")
     end
 
-    return HolonomyState(connection_form, drift_field)
+    ω = compute_connection_form(M)
+    ε = 0.005  # small transport scale
+
+    return v .+ ε .* ω
 end
 
 
-"""
-    holonomy_transport(M::SoftManifold80D, H::HolonomyState, v)
+# ============================================================
+#  Holonomy Energy
+# ============================================================
 
-Applies a placeholder holonomy transport to vector v.
-Real version will use parallel transport via ω.
 """
-function holonomy_transport(M::SoftManifold80D, H::HolonomyState, v::Vector{Float64})
-    dim = M.dim
-    transported = similar(v)
+    holonomy_energy(v, M)
 
-    # Placeholder: apply drift field as a soft rotation
-    for i in 1:dim
-        transported[i] = v[i] + 0.001 * H.drift_field[i]
+Computes holonomy energy:
+
+    H(v) = ∑ ωᵢ vᵢ²
+
+where ω is the connection form.
+
+Altitude: A7/A8.
+"""
+function holonomy_energy(v::Vector{Float64}, M::Manifold80D.SoftManifold80D)
+    if length(v) != M.dim
+        error("Holonomy energy error: vector dimension mismatch.")
     end
 
-    return transported
+    ω = compute_connection_form(M)
+    return sum(ω .* (v .^ 2))
 end
 
 end # module
