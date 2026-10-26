@@ -1,58 +1,83 @@
 module ConnectivityInvariant
 
-using ..ErdosGraph
+export connectivity_score, connectivity_invariant
+
+using LinearAlgebra
 using ..Manifold80D
-using ..A3_Mechanistic
-using ..A5_LatentSemantics
-export ConnectivityInvariantState, compute_connectivity_invariant
+using ..A7_Spectral
+using ..CurvatureEnvelope
+using ..HolonomyField
+using ..TopologyOperator
+using ..FusionOperator
+
+# ============================================================
+#  Connectivity Score
+# ============================================================
 
 """
-    ConnectivityInvariantState
+    connectivity_score(e, M)
 
-Represents the connectivity curvature invariant for an embedded Erdős graph.
-Stores:
-- raw connectivity score
-- manifold-projected connectivity vector
-- invariant value
+Computes a connectivity score for an embedded graph vector e ∈ ℝ⁸⁰.
+
+Score combines:
+- spectral energy
+- curvature energy
+- holonomy energy
+- topology energy
+
+Formula:
+    C = α Es + β Ec + γ Eh + δ Et
+
+Altitude: A8.
 """
-struct ConnectivityInvariantState
-    raw_connectivity::Float64
-    projection::Vector{Float64}
-    invariant::Float64
-    altitude::Int
+function connectivity_score(e::Vector{Float64}, M::Manifold80D.SoftManifold80D)
+    if length(e) != M.dim
+        error("Connectivity score error: vector dimension mismatch.")
+    end
+
+    # Spectral energy
+    Es = A7_Spectral.spectral_energy(e, M)
+
+    # Curvature energy
+    Ec = CurvatureEnvelope.curvature_energy(e, M)
+
+    # Holonomy energy
+    Eh = HolonomyField.holonomy_energy(e, M)
+
+    # Topology energy
+    Et = TopologyOperator.topology_energy(e, M)
+
+    # Weights
+    α = 0.25
+    β = 0.25
+    γ = 0.25
+    δ = 0.25
+
+    return α*Es + β*Ec + γ*Eh + δ*Et
 end
 
 
+# ============================================================
+#  Connectivity Invariant
+# ============================================================
+
 """
-    compute_connectivity_invariant(G, M)
+    connectivity_invariant(e, M)
 
-Computes a simple placeholder connectivity invariant:
-- raw connectivity = average degree
-- projection = manifold embedding of adjacency structure
-- invariant = norm(projection) * raw_connectivity
+Computes the full connectivity invariant:
 
-Altitude: A3 → A5 invariant extraction.
+    I_conn = Φ(e) * C
+
+where:
+- Φ(e) is fusion energy
+- C is connectivity score
+
+Altitude: A8 → A3.
 """
-function compute_connectivity_invariant(G::ErdosGraph.ErdosGraphState,
-                                        M::Manifold80D.SoftManifold80D)
-
-    # A3 mechanistic validation
-    A3_Mechanistic.route_to_A3(G.adjacency)
-
-    # Raw connectivity: average degree
-    degrees = [sum(G.adjacency[i, :]) for i in 1:G.n]
-    raw_conn = mean(degrees)
-
-    # Manifold projection
-    projection = ErdosGraph.embed_graph_in_manifold(G, M)
-
-    # A5 latent-semantic routing
-    A5_LatentSemantics.route_to_A5(projection)
-
-    # Invariant: placeholder norm-based curvature proxy
-    invariant_value = raw_conn * norm(projection)
-
-    return ConnectivityInvariantState(raw_conn, projection, invariant_value, 5)
+function connectivity_invariant(e::Vector{Float64}, M::Manifold80D.SoftManifold80D)
+    C = connectivity_score(e, M)
+    Φ = FusionOperator.fusion_energy(e, M)
+    return Φ * C
 end
 
 end # module
