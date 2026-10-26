@@ -1,62 +1,83 @@
 module QuantizationInvariant
 
-using ..BitNetTernary
+export quantization_score, quantization_invariant
+
+using LinearAlgebra
 using ..Manifold80D
-using ..A4_FeatureCircuits
-using ..A5_LatentSemantics
-export QuantizationInvariantState, compute_quantization_invariant
+using ..A7_Spectral
+using ..CurvatureEnvelope
+using ..HolonomyField
+using ..TopologyOperator
+using ..FusionOperator
+
+# ============================================================
+#  Quantization Score
+# ============================================================
 
 """
-    QuantizationInvariantState
+    quantization_score(e, M)
 
-Represents the quantization curvature invariant for an embedded BitNet vector.
-Stores:
-- raw ternary jump count
-- manifold projection
-- invariant value
+Computes a quantization score for an embedded ternary vector e ∈ ℝ⁸⁰.
+
+Score combines:
+- spectral energy
+- curvature energy
+- holonomy energy
+- topology energy
+
+Formula:
+    Q = α Es + β Ec + γ Eh + δ Et
+
+Altitude: A8.
 """
-struct QuantizationInvariantState
-    jump_count::Int
-    projection::Vector{Float64}
-    invariant::Float64
-    altitude::Int
+function quantization_score(e::Vector{Float64}, M::Manifold80D.SoftManifold80D)
+    if length(e) != M.dim
+        error("Quantization score error: vector dimension mismatch.")
+    end
+
+    # Spectral energy
+    Es = A7_Spectral.spectral_energy(e, M)
+
+    # Curvature energy
+    Ec = CurvatureEnvelope.curvature_energy(e, M)
+
+    # Holonomy energy
+    Eh = HolonomyField.holonomy_energy(e, M)
+
+    # Topology energy
+    Et = TopologyOperator.topology_energy(e, M)
+
+    # Equal weights
+    α = 0.25
+    β = 0.25
+    γ = 0.25
+    δ = 0.25
+
+    return α*Es + β*Ec + γ*Eh + δ*Et
 end
 
 
+# ============================================================
+#  Quantization Invariant
+# ============================================================
+
 """
-    compute_quantization_invariant(B, M)
+    quantization_invariant(e, M)
 
-Computes a placeholder quantization invariant:
-- jump_count = number of ternary transitions
-- projection = manifold embedding of ternary vector
-- invariant = jump_count * norm(projection)
+Computes the full quantization invariant:
 
-Altitude: A4 → A5 invariant extraction.
+    I_quant = Φ(e) * Q
+
+where:
+- Φ(e) is fusion energy
+- Q is quantization score
+
+Altitude: A8 → A3.
 """
-function compute_quantization_invariant(B::BitNetTernary.BitNetState,
-                                        M::Manifold80D.SoftManifold80D)
-
-    # A4 feature-circuit validation
-    A4_FeatureCircuits.route_to_A4(B.ternary)
-
-    # Count ternary jumps (transitions between -1, 0, +1)
-    jumps = 0
-    for i in 2:length(B.ternary)
-        if B.ternary[i] != B.ternary[i-1]
-            jumps += 1
-        end
-    end
-
-    # Manifold projection
-    projection = BitNetTernary.embed_bitnet_in_manifold(B, M)
-
-    # A5 latent-semantic routing
-    A5_LatentSemantics.route_to_A5(projection)
-
-    # Invariant: placeholder norm-based curvature proxy
-    invariant_value = jumps * norm(projection)
-
-    return QuantizationInvariantState(jumps, projection, invariant_value, 5)
+function quantization_invariant(e::Vector{Float64}, M::Manifold80D.SoftManifold80D)
+    Q = quantization_score(e, M)
+    Φ = FusionOperator.fusion_energy(e, M)
+    return Φ * Q
 end
 
 end # module
