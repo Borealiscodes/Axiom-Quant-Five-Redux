@@ -1,57 +1,83 @@
 module ConvexityInvariant
 
-using ..MarkowitzFrontier
+export convexity_score, convexity_invariant
+
+using LinearAlgebra
 using ..Manifold80D
-using ..A5_LatentSemantics
 using ..A7_Spectral
-export ConvexityInvariantState, compute_convexity_invariant
+using ..CurvatureEnvelope
+using ..HolonomyField
+using ..TopologyOperator
+using ..FusionOperator
+
+# ============================================================
+#  Convexity Score
+# ============================================================
 
 """
-    ConvexityInvariantState
+    convexity_score(e, M)
 
-Represents the convexity curvature invariant for an embedded Markowitz frontier.
-Stores:
-- raw convexity score
-- manifold projection
-- invariant value
+Computes a convexity score for an embedded frontier vector e ∈ ℝ⁸⁰.
+
+Score combines:
+- spectral energy
+- curvature energy
+- holonomy energy
+- topology energy
+
+Formula:
+    V = α Es + β Ec + γ Eh + δ Et
+
+Altitude: A8.
 """
-struct ConvexityInvariantState
-    convexity_score::Float64
-    projection::Vector{Float64}
-    invariant::Float64
-    altitude::Int
+function convexity_score(e::Vector{Float64}, M::Manifold80D.SoftManifold80D)
+    if length(e) != M.dim
+        error("Convexity score error: vector dimension mismatch.")
+    end
+
+    # Spectral energy
+    Es = A7_Spectral.spectral_energy(e, M)
+
+    # Curvature energy
+    Ec = CurvatureEnvelope.curvature_energy(e, M)
+
+    # Holonomy energy
+    Eh = HolonomyField.holonomy_energy(e, M)
+
+    # Topology energy
+    Et = TopologyOperator.topology_energy(e, M)
+
+    # Equal weights
+    α = 0.25
+    β = 0.25
+    γ = 0.25
+    δ = 0.25
+
+    return α*Es + β*Ec + γ*Eh + δ*Et
 end
 
 
+# ============================================================
+#  Convexity Invariant
+# ============================================================
+
 """
-    compute_convexity_invariant(MK, M)
+    convexity_invariant(e, M)
 
-Computes a placeholder convexity invariant:
-- convexity_score = variance of frontier weights
-- projection = manifold embedding of frontier
-- invariant = convexity_score * norm(projection)
+Computes the full convexity invariant:
 
-Altitude: A5 → A7 invariant extraction.
+    I_convex = Φ(e) * V
+
+where:
+- Φ(e) is fusion energy
+- V is convexity score
+
+Altitude: A8 → A3.
 """
-function compute_convexity_invariant(MK::MarkowitzFrontier.MarkowitzState,
-                                     M::Manifold80D.SoftManifold80D)
-
-    # A5 latent-semantic validation
-    A5_LatentSemantics.route_to_A5(MK.weights)
-
-    # Raw convexity: variance of weights
-    convexity_score = var(MK.weights)
-
-    # Manifold projection
-    projection = MarkowitzFrontier.embed_markowitz_in_manifold(MK, M)
-
-    # A7 spectral routing (convexity interacts with curvature envelope)
-    A7_Spectral.route_to_A7(projection, M)
-
-    # Invariant: placeholder norm-based curvature proxy
-    invariant_value = convexity_score * norm(projection)
-
-    return ConvexityInvariantState(convexity_score, projection, invariant_value, 7)
+function convexity_invariant(e::Vector{Float64}, M::Manifold80D.SoftManifold80D)
+    V = convexity_score(e, M)
+    Φ = FusionOperator.fusion_energy(e, M)
+    return Φ * V
 end
 
 end # module
