@@ -1,0 +1,10 @@
+name = "Redux"
+uuid = "f3b9c5e0-9c3a-4f8e-9f6b-2c9b1e3d9a11"
+authors = ["Borealis S. Hedling"]
+version = "0.1.0"
+
+[deps]
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+
+[compat]
+julia = "1.9"
