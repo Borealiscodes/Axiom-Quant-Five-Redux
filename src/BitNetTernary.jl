@@ -1,64 +1,108 @@
 module BitNetTernary
 
+export quantize_ternary, embed_ternary_geometry
+
+using LinearAlgebra
 using ..Manifold80D
-using ..A4_FeatureCircuits
-using ..A5_LatentSemantics
-export BitNetState, ternary_quantize, embed_bitnet_in_manifold
+using ..A7_Spectral
+using ..CurvatureEnvelope
+using ..HolonomyField
+using ..TopologyOperator
+
+# ============================================================
+#  Ternary Quantization
+# ============================================================
 
 """
-    BitNetState
+    quantize_ternary(x)
 
-Represents a ternary quantized vector at altitude A4–A5.
-Stores the raw vector, its ternary form, and metadata.
+Quantizes a real vector x into ternary values {-1, 0, +1}.
+
+Rule:
+- xᵢ >  0.5 → +1
+- |xᵢ| ≤ 0.5 → 0
+- xᵢ < -0.5 → -1
+
+Returns:
+- q ∈ {-1,0,1}^length(x)
+- jumps: number of sign changes
+
+Altitude: A3.
 """
-struct BitNetState
-    raw::Vector{Float64}
-    ternary::Vector{Int}
-    altitude::Int
-end
+function quantize_ternary(x::Vector{Float64})
+    q = zeros(Int, length(x))
 
-
-"""
-    ternary_quantize(x)
-
-Quantizes a real-valued vector into {-1, 0, +1}.
-Altitude: A4 (feature circuits).
-"""
-function ternary_quantize(x::Vector{Float64})
-    t = Vector{Int}(undef, length(x))
-    for i in eachindex(x)
+    for i in 1:length(x)
         if x[i] > 0.5
-            t[i] = 1
+            q[i] = 1
         elseif x[i] < -0.5
-            t[i] = -1
+            q[i] = -1
         else
-            t[i] = 0
+            q[i] = 0
         end
     end
 
-    # Route through A4 → A5 altitude chain
-    A4_FeatureCircuits.route_to_A4(t)
-    A5_LatentSemantics.route_to_A5(t)
+    # Count sign changes (jumps)
+    jumps = 0
+    for i in 2:length(q)
+        if q[i] != q[i-1]
+            jumps += 1
+        end
+    end
 
-    return BitNetState(x, t, 5)
+    return (q=q, jumps=jumps)
 end
 
 
-"""
-    embed_bitnet_in_manifold(B, M)
+# ============================================================
+#  Ternary → Manifold Embedding
+# ============================================================
 
-Embeds the ternary vector into the 80D soft manifold.
-Altitude: A5 → manifold projection.
 """
-function embed_bitnet_in_manifold(B::BitNetState, M::Manifold80D.SoftManifold80D)
-    projection = zeros(Float64, M.dim)
+    embed_ternary_geometry(x, M)
 
-    # Simple placeholder: map ternary values into first coordinates
-    for i in 1:min(length(B.ternary), M.dim)
-        projection[i] = B.ternary[i]
+Embeds a ternary-quantized vector into the 80D soft manifold.
+
+Steps:
+1. Quantize x → q
+2. Pad q to 80D
+3. Spectral projection
+4. Curvature modulation
+5. Holonomy transport
+6. Topology modulation
+
+Returns:
+- embedded vector e ∈ ℝ⁸⁰
+
+Altitude: A5 → A7 → A8.
+"""
+function embed_ternary_geometry(x::Vector{Float64}, M::Manifold80D.SoftManifold80D)
+    # Step 1: Quantize
+    Q = quantize_ternary(x)
+    q = Q.q
+
+    # Step 2: Pad to 80D
+    v = zeros(Float64, M.dim)
+    for i in 1:min(length(q), M.dim)
+        v[i] = q[i]
     end
 
-    return projection
+    # Step 3: Spectral projection
+    λ, U = A7_Spectral.spectral_decomposition(M)
+    s = U' * v
+
+    # Step 4: Curvature modulation
+    κ = CurvatureEnvelope.compute_curvature_envelope(M)
+    c = s .* (1 .+ 0.1 .* κ)
+
+    # Step 5: Holonomy transport
+    h = HolonomyField.holonomy_transport(c, M)
+
+    # Step 6: Topology modulation
+    τ = TopologyOperator.compute_topology_signature(M)
+    e = h .* (1 .+ 0.05 .* τ)
+
+    return e
 end
 
 end # module
