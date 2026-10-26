@@ -1,0 +1,99 @@
+{
+  "project": "Axiom-Quant-Five-Redux",
+  "version": "1.0",
+  "description": "Geometric AI interpretability framework extending the original Axiom Quant Five Threshold Domains with soft-manifold embeddings, altitude separation, and Lean verification.",
+  "phases": [
+    {
+      "id": "phase-1",
+      "name": "Foundation Layer",
+      "status": "in-progress",
+      "deliverables": [
+        "Manifold80D.jl",
+        "Altitude Framework (A3–A10)",
+        "soft80d-threshold-embedding.tex",
+        "ManifoldAxioms.lean"
+      ]
+    },
+    {
+      "id": "phase-2",
+      "name": "Threshold Domain Modules",
+      "status": "pending",
+      "deliverables": [
+        "ErdosGraph.jl",
+        "BitNetTernary.jl",
+        "MarkowitzFrontier.jl",
+        "BlackScholesVol.jl",
+        "RenyiDyadic.jl",
+        "ThresholdDomains.lean",
+        "InvariantExtraction.lean"
+      ]
+    },
+    {
+      "id": "phase-3",
+      "name": "Invariant Extraction Engine",
+      "status": "pending",
+      "deliverables": [
+        "CurvatureEnvelope.jl",
+        "HolonomyField.jl",
+        "Unified Invariants Directory",
+        "Lean proofs for invariants"
+      ]
+    },
+    {
+      "id": "phase-4",
+      "name": "AI Interpretability Layer",
+      "status": "designing",
+      "deliverables": [
+        "Altitude modules",
+        "AI altitude explanation in README",
+        "Advanced Mathematics section",
+        "Bill Nye Tile explainer"
+      ]
+    },
+    {
+      "id": "phase-5",
+      "name": "Julia Runtime Integration",
+      "status": "upcoming",
+      "deliverables": [
+        "TriadRuntime-compatible manifold",
+        "Domain embedding operators",
+        "Invariant telemetry",
+        "Holonomy drift operators"
+      ]
+    },
+    {
+      "id": "phase-6",
+      "name": "Lean Verification Completion",
+      "status": "parallel",
+      "deliverables": [
+        "HolonomyCurvature.lean",
+        "InvariantExtraction.lean",
+        "ThresholdDomains.lean",
+        "ManifoldAxioms.lean"
+      ]
+    },
+    {
+      "id": "phase-7",
+      "name": "Documentation and Diagrams",
+      "status": "ongoing",
+      "deliverables": [
+        "README enhancements",
+        "Color-tile diagrams",
+        "Manifold embedding diagrams",
+        "Altitude charts"
+      ]
+    },
+    {
+      "id": "phase-8",
+      "name": "Release and Integration",
+      "status": "future",
+      "deliverables": [
+        "Versioned Julia package",
+        "Lean verification badge",
+        "Documentation site",
+        "Integration with TriadRuntime.jl",
+        "Integration with Sovereignty-Library"
+      ]
+    }
+  ]
+    }
