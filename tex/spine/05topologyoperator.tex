@@ -1,89 +1,146 @@
-\section{Topology Modulation Operator}
+\section{Topology Operator \texorpdfstring{$\Phi_8^t$}{Phi8t}}
+\label{sec:topology}
 
-\subsection{Overview}
+This appendix provides the full mathematical development of the topology
+operator $\Phi_8^t$, corresponding to altitude $A8^t$ and domain $D_5$ in the
+AxiomQuant Five Redux system. The operator acts on the holonomy output
+$h(x) = \Phi_8(c(x))$ and lifts it into topology altitude via modulation with
+the topology signature $\tau(x)$.
 
-The topology modulation operator completes the geometric transformation
-pipeline at altitude A8 by incorporating global structural information
-from the manifold. Whereas spectral, curvature, and holonomy operators
-capture local and accumulated geometric behavior, the topology operator
-extracts a global signature that reflects the manifold’s large-scale
-connectivity and shape.
+\subsection{Topology Domain}
 
-This section formalizes the topology signature, its construction, and
-its role in the Redux embedding pipeline.
+The topology domain $D_5$ consists of all points $x \in \mathcal{M}$ equipped
+with the topology signature $\tau(x)$.
 
-\subsection{Topological Structure of the Manifold}
+Formally:
+\[
+D_5 = \{ x \in \mathcal{M} \mid \tau(x) \in \mathbb{R}^{80} \text{ is smooth} \}.
+\]
 
-Although the manifold $M = (\mathbb{R}^{80}, g)$ is topologically
-trivial, the metric tensor $g$ induces nontrivial geometric features
-that can be summarized through a topology signature. The purpose of the
-topology operator is not to detect classical invariants such as Betti
-numbers, but rather to extract a global modulation factor derived from
-the manifold’s geometric configuration.
+Altitude alignment:
+\[
+A8^t \leftrightarrow D_5.
+\]
 
 \subsection{Topology Signature}
 
-We define the topology signature
+The topology signature
 \[
-\tau(x) \in \mathbb{R}^{80},
+\tau : \mathcal{M} \to \mathbb{R}^{80}
 \]
-as a normalized vector encoding global geometric information. One
-possible construction is
-\[
-\tau_i(x)
-    = \frac{1}{Z}
-      \left(
-        \sum_{j}
-        \left| \nabla g_{ij}(x) \right|
-      \right),
-\]
-where $g_{ij}(x)$ are the components of the metric tensor and $Z$ is a
-normalization constant ensuring
-\[
-\|\tau(x)\|_\infty \leq 1.
-\]
+encodes local topological variation. Typical components include:
 
-This signature reflects how the metric varies across the manifold and
-thus captures global geometric behavior.
+\begin{itemize}
+    \item local Betti-number gradients,
+    \item micro-fibration signatures,
+    \item local homology shifts,
+    \item Morse-theoretic criticality indicators.
+\end{itemize}
+
+Smoothness assumption:
+\[
+\tau \in C^\infty(\mathcal{M}, \mathbb{R}^{80}).
+\]
 
 \subsection{Topology Modulation}
 
-Given a holonomy-transported vector $h \in \mathbb{R}^{80}$, the
-topology-modulated vector is defined as
+Given the holonomy-modulated vector
 \[
-e = h \odot (1 + \beta \tau(x)),
+h(x) = (h_1(x), \dots, h_{80}(x)),
 \]
-where $\beta$ is a scaling constant (typically $\beta = 0.05$ in the
-Redux runtime).
-
-This modulation incorporates global geometric information into the
-representation.
-
-\subsection{Stability Properties}
-
-Because $\tau(x)$ depends smoothly on the metric tensor, we have
+define topology modulation:
 \[
-\| \tau(x + \delta x) - \tau(x) \|
-    \leq C \| \delta G \|,
+t(x) = \Phi_8^t(h(x)) = h(x) + \tau(x).
 \]
-for some constant $C$ depending on the global geometric bounds of $M$.
 
-Thus topology modulation preserves stability across the embedding
-pipeline.
-
-\subsection{Altitude Interpretation}
-
-The topology operator completes the altitude A8 transformation by
-incorporating global geometric structure. Whereas holonomy transport
-captures accumulated curvature along canonical curves, topology
-modulation captures how the manifold’s geometry varies globally.
-
-\subsection{Output}
-
-The output of the topology operator is the fully modulated embedding
-vector
+Thus:
 \[
-e \in \mathbb{R}^{80},
+t_i(x) = h_i(x) + \tau_i(x).
 \]
-which serves as the input to the invariant computation layer in the
-next stage of the Redux pipeline.
+
+This produces a topology-modulated vector in $\mathbb{R}^{80}$.
+
+\subsection{Operator Definition}
+
+Formally:
+\[
+\Phi_8^t : \mathbb{R}^{80} \to \mathbb{R}^{80},
+\qquad
+\Phi_8^t(h(x)) = h(x) + \tau(x).
+\]
+
+Altitude alignment:
+\[
+\Phi_8^t : A8 \to A8^t.
+\]
+
+Domain alignment:
+\[
+\Phi_8^t : D_4 \to D_5.
+\]
+
+\subsection{Topology Gradient Identity}
+
+Topology modulation satisfies:
+\[
+t(x) = h(x) + \tau(x)
+= \exp(R(x)) c(x) + \tau(x).
+\]
+
+Thus topology altitude incorporates:
+
+\begin{itemize}
+    \item curvature (via $c(x)$),
+    \item holonomy (via $H(x)$),
+    \item topology (via $\tau(x)$).
+\end{itemize}
+
+\subsection{Topology Smoothness}
+
+Since $h(x)$ and $\tau(x)$ are smooth:
+\[
+\Phi_8^t \in C^\infty(\mathcal{M}, \mathbb{R}^{80}).
+\]
+
+\subsection{Topology Stability}
+
+For sufficiently small perturbations of the metric:
+\[
+\| \Delta h \| < \varepsilon,
+\quad
+\| \Delta \tau \| < \varepsilon,
+\]
+and thus:
+\[
+\| \Delta t(x) \| < C \varepsilon.
+\]
+
+\subsection{Topology Reversibility}
+
+On the topology domain $D_5$, the map $\Phi_8^t$ is injective up to topology
+symmetry:
+\[
+\Phi_8^t(h(x)) = \Phi_8^t(h(x')) \Rightarrow x \sim x'.
+\]
+
+This equivalence is resolved by the invariant operator $\Phi_9$.
+
+\subsection{Topology Monotonicity}
+
+Altitude monotonicity:
+\[
+h(x) \le h(x') \Rightarrow \Phi_8^t(h(x)) \le \Phi_8^t(h(x')).
+\]
+
+This follows from the monotonicity of topology signatures under local
+topological expansion.
+
+\subsection{Operator Role}
+
+The topology operator provides the fourth geometric lift in the Redux pipeline:
+\[
+h(x) \mapsto t(x),
+\]
+feeding directly into the invariant operator $\Phi_9$.
+
+This completes the formal development of the topology operator.
