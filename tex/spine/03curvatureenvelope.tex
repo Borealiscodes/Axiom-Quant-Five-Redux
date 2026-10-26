@@ -1,0 +1,91 @@
+\section{Curvature Envelope Operator}
+
+\subsection{Overview}
+
+The curvature envelope operator defines the transition from altitude A7
+(spectral geometry) to altitude A8 (curvature-modulated geometry). Its
+role is to extract a normalized curvature signature from the manifold
+and apply it as a modulation factor to the spectral projection vector.
+
+This section formalizes the curvature envelope, its construction, and
+its stability properties.
+
+\subsection{Curvature Tensor}
+
+Given the metric tensor $g_x$ at a point $x \in M$, the Riemann
+curvature tensor is defined by
+\[
+R(u, v)w
+    = \nabla_u \nabla_v w
+    - \nabla_v \nabla_u w
+    - \nabla_{[u,v]} w,
+\]
+where $\nabla$ denotes the Levi-Civita connection associated with $g$.
+The curvature tensor encodes how the manifold deviates from flatness.
+
+\subsection{Curvature Envelope Definition}
+
+The curvature envelope operator extracts a normalized curvature
+signature
+\[
+\kappa(x) \in \mathbb{R}^{80},
+\]
+defined by
+\[
+\kappa_i(x)
+    = \frac{1}{Z}
+      \left(
+        \sum_{j,k}
+        \left| R(e_i, e_j)e_k \right|
+      \right),
+\]
+where $\{e_i\}$ is the standard basis of $\mathbb{R}^{80}$ and $Z$ is a
+normalization constant ensuring
+\[
+\|\kappa(x)\|_\infty \leq 1.
+\]
+
+This signature captures the aggregate curvature behavior along each
+coordinate direction.
+
+\subsection{Curvature Modulation}
+
+Given a spectral projection vector $s \in \mathbb{R}^{80}$, the
+curvature-modulated vector is defined as
+\[
+c = s \odot (1 + \alpha \kappa(x)),
+\]
+where $\odot$ denotes elementwise multiplication and $\alpha$ is a
+scaling constant (typically $\alpha = 0.1$ in the Redux runtime).
+
+This modulation incorporates geometric curvature into the spectral
+representation.
+
+\subsection{Stability Properties}
+
+Because the curvature tensor depends smoothly on the metric tensor,
+$\kappa(x)$ is a smooth function of $x$. Therefore,
+\[
+\| \kappa(x + \delta x) - \kappa(x) \|
+    \leq C \| \delta G \|,
+\]
+for some constant $C$ depending on the curvature bounds of $M$.
+
+This ensures that curvature modulation does not introduce instability
+into the embedding pipeline.
+
+\subsection{Altitude Interpretation}
+
+The curvature envelope operator lifts the representation from altitude
+A7 (spectral geometry) to altitude A8 (curvature-modulated geometry).
+This transition incorporates geometric information that cannot be
+captured by spectral decomposition alone.
+
+\subsection{Output}
+
+The output of the curvature envelope operator is the modulated vector
+\[
+c \in \mathbb{R}^{80},
+\]
+which serves as the input to the holonomy transport operator in the
+next stage of the pipeline.
