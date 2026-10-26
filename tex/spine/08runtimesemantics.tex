@@ -1,99 +1,173 @@
-\section{Runtime Semantics of the Redux Pipeline}
+\section{Runtime Semantics}
+\label{sec:runtimesemantics}
 
-\subsection{Overview}
+This appendix provides the formal runtime semantics for the AxiomQuant Five
+Redux operator chain. The semantics define how the operators $\Phi_5, \Phi_7,
+\Phi_8, \Phi_8^t, \Phi_9$ are implemented in the Julia runtime while preserving
+the mathematical properties required by the canonical spine.
 
-The runtime semantics define how the geometric operators introduced in
-previous sections are composed, evaluated, and interpreted within the
-Redux system. Although the implementation may vary across programming
-languages or environments, the semantics presented here are independent
-of any specific runtime and serve as the authoritative mathematical
-description of the pipeline.
+\subsection{Runtime Model}
 
-Given an input structure $G$, the runtime evaluates the embedding
-pipeline and invariant layer to produce a diagnostic signature
+Let the runtime state be:
 \[
-\mathcal{I}(G) \in \mathbb{R}^5.
+\mathcal{R}(x) = (g(x), R(x), H(x), \tau(x), s(x), c(x), h(x), t(x), I(x)).
 \]
 
-\subsection{Operator Ordering}
-
-The Redux pipeline is strictly ordered. Let
+The runtime must satisfy:
 \[
-\Phi = (\Phi_1, \Phi_2, \Phi_3, \Phi_4, \Phi_5)
+\mathcal{R}(x) \in C^\infty(\mathcal{M})
 \]
-denote the sequence of operators:
-\begin{align*}
-\Phi_1 &: \text{Structural normalization (A3)}, \\
-\Phi_2 &: \text{Spectral projection (A5)}, \\
-\Phi_3 &: \text{Curvature modulation (A7)}, \\
-\Phi_4 &: \text{Holonomy transport (A8)}, \\
-\Phi_5 &: \text{Topology modulation (A8)}.
-\end{align*}
+and preserve altitude/domain semantics.
 
-The runtime applies these operators in order:
+\subsection{Operator Contracts}
+
+Each operator has a runtime contract:
+
 \[
-e = \Phi_5(\Phi_4(\Phi_3(\Phi_2(\Phi_1(G))))).
+\Phi_k^{\text{rt}} : \text{State}_{k-1} \to \text{State}_k,
 \]
-
-This ordering is fixed and defines the semantics of the pipeline.
-
-\subsection{Reversibility}
-
-Each operator $\Phi_k$ is reversible up to geometric equivalence. That
-is, for each operator there exists an inverse operator
+where:
 \[
-\Phi_k^{-1}
-\]
-such that
-\[
-\Phi_k^{-1}(\Phi_k(v)) = v,
-\]
-provided the geometric context is preserved. In practice, reversibility
-is used for diagnostic purposes and ensures that the pipeline does not
-destroy information.
-
-\subsection{Stability Guarantees}
-
-Let $G$ and $G'$ be two input structures with embeddings $e$ and $e'$.
-The runtime satisfies the stability bound
-\[
-\| e - e' \|
-    \leq C \| G - G' \|,
-\]
-for some constant $C$ depending on the geometric bounds of the manifold.
-This ensures that small changes in the input structure produce small
-changes in the embedding.
-
-\subsection{Invariant Evaluation}
-
-Once the embedding $e$ is computed, the runtime evaluates the invariant
-signature
-\[
-\mathcal{I}(e)
-    = \left(
-        I_{\mathrm{conn}}(e),
-        I_{\mathrm{quant}}(e),
-        I_{\mathrm{conv}}(e),
-        I_{\mathrm{canon}}(e),
-        I_{\mathrm{entropy}}(e)
-      \right).
+\text{State}_0 = x,
+\qquad
+\text{State}_1 = s(x),
+\qquad
+\text{State}_2 = c(x),
+\qquad
+\text{State}_3 = h(x),
+\qquad
+\text{State}_4 = t(x),
+\qquad
+\text{State}_5 = I(x).
 \]
 
-This signature is the final output of the runtime and provides a
-diagnostic summary of the input structure.
-
-\subsection{Altitude Interpretation}
-
-The runtime semantics complete the altitude ladder by defining how the
-operators are composed and interpreted. The pipeline transitions from
-structural input (A3) to geometric representation (A8) and finally to
-analytical diagnostics (A9).
-
-\subsection{Final Output}
-
-The final output of the Redux runtime is the invariant signature
+Runtime operators must satisfy:
 \[
-\mathcal{I}(G) \in \mathbb{R}^5,
+\Phi_k^{\text{rt}} = \Phi_k + \epsilon_k,
 \]
-which serves as the basis for downstream analysis, comparison, and
-interpretation.
+where $\epsilon_k$ is a bounded numerical error.
+
+\subsection{Runtime Smoothness}
+
+Each operator must satisfy:
+\[
+\Phi_k^{\text{rt}} \in C^\infty,
+\]
+and numerical approximations must preserve smoothness:
+\[
+\| \epsilon_k \| < \delta_k,
+\qquad
+\delta_k \ll 1.
+\]
+
+\subsection{Runtime Stability}
+
+Let $C_k$ be the stability constant for $\Phi_k$.
+
+Runtime stability requires:
+\[
+\| \Phi_k^{\text{rt}}(u) - \Phi_k^{\text{rt}}(v) \|
+\le
+C_k \| u - v \| + \delta_k.
+\]
+
+Thus the full pipeline satisfies:
+\[
+\| E^{\text{rt}}(x) - E^{\text{rt}}(x') \|
+\le
+C \| x - x' \| + \delta,
+\]
+where:
+\[
+C = C_9 C_8^t C_8 C_7 C_5,
+\qquad
+\delta = \sum_k \delta_k.
+\]
+
+\subsection{Runtime Reversibility}
+
+Runtime reversibility requires:
+\[
+E^{\text{rt}}(x) = E^{\text{rt}}(x')
+\Rightarrow
+x = x' + \eta,
+\]
+where $\eta$ is bounded numerical error:
+\[
+\| \eta \| < \delta.
+\]
+
+\subsection{Runtime Monotonicity}
+
+Runtime monotonicity requires:
+\[
+u \le v \Rightarrow \Phi_k^{\text{rt}}(u) \le \Phi_k^{\text{rt}}(v).
+\]
+
+Thus:
+\[
+x \le x' \Rightarrow E^{\text{rt}}(x) \le E^{\text{rt}}(x').
+\]
+
+\subsection{Runtime Altitude Preservation}
+
+Runtime altitude preservation requires:
+\[
+A_k(u) \le A_k(v)
+\Rightarrow
+A_{k+1}(\Phi_k^{\text{rt}}(u))
+\le
+A_{k+1}(\Phi_k^{\text{rt}}(v)).
+\]
+
+This ensures the runtime pipeline respects the altitude ladder.
+
+\subsection{Runtime Domain Preservation}
+
+Runtime domain preservation requires:
+\[
+u \in D_k \Rightarrow \Phi_k^{\text{rt}}(u) \in D_{k+1}.
+\]
+
+Thus:
+\[
+x \in D_1 \Rightarrow E^{\text{rt}}(x) \in D_5.
+\]
+
+\subsection{Runtime Pipeline}
+
+The runtime pipeline is:
+\[
+E^{\text{rt}} = 
+\Phi_9^{\text{rt}}
+\circ
+\Phi_8^{t,\text{rt}}
+\circ
+\Phi_8^{\text{rt}}
+\circ
+\Phi_7^{\text{rt}}
+\circ
+\Phi_5^{\text{rt}}.
+\]
+
+Runtime correctness requires:
+\[
+E^{\text{rt}} = E + \epsilon,
+\qquad
+\| \epsilon \| < \delta.
+\]
+
+\subsection{Operator Role}
+
+The runtime semantics ensure that the executable Julia pipeline preserves:
+
+\begin{itemize}
+    \item smoothness,
+    \item stability,
+    \item reversibility,
+    \item monotonicity,
+    \item altitude/domain semantics,
+    \item invariant correctness.
+\end{itemize}
+
+This completes the formal development of the runtime semantics.
