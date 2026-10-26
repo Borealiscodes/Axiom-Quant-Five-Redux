@@ -1,5 +1,4 @@
-
-Expanded Test Suite Overview — Geometry Validation Lab
+# Expanded Test Suite Overview — Geometry Validation Lab
 
 ---
 
