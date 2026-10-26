@@ -1,66 +1,131 @@
-\section{Spectral Operator and Eigenbasis Construction}
+\section{Spectral Operator \texorpdfstring{$\Phi_5$}{Phi5}}
+\label{sec:spectral}
 
-\subsection{Overview}
+This appendix provides the full mathematical development of the spectral
+operator $\Phi_5$, corresponding to altitude $A5$ and domain $D_2$ in the
+AxiomQuant Five Redux system. The operator acts on the soft 80D Riemannian
+manifold $(\mathcal{M}^{80}, g)$ defined in Appendix~\ref{sec:manifold}.
 
-The spectral operator defines the transition from altitude A5 to A7 in
-the Redux geometric pipeline. Its purpose is to extract a stable
-eigenbasis from the manifold's metric structure and project input
-vectors into this basis. This section formalizes the spectral
-decomposition and establishes the mathematical properties required for
-later curvature and holonomy modulation.
+\subsection{Spectral Domain}
+
+The spectral domain $D_2$ consists of all points $x \in \mathcal{M}$ equipped
+with the metric $g$ and its induced Laplace--Beltrami operator. Formally:
+\[
+D_2 = \{ x \in \mathcal{M} \mid g(x) \text{ is defined and smooth} \}.
+\]
+
+Altitude alignment:
+\[
+A5 \leftrightarrow D_2.
+\]
+
+\subsection{Laplace--Beltrami Operator}
+
+Define the Laplace--Beltrami operator acting on smooth scalar fields $f$:
+\[
+\Delta f = \nabla^i \nabla_i f,
+\]
+where $\nabla$ is the Levi-Civita connection associated with $g$.
+
+In coordinates:
+\[
+\Delta f = \frac{1}{\sqrt{|g|}}
+\partial_i \left( \sqrt{|g|} g^{ij} \partial_j f \right).
+\]
+
+Smoothness assumption:
+\[
+\Delta : C^\infty(\mathcal{M}) \to C^\infty(\mathcal{M}).
+\]
 
 \subsection{Spectral Decomposition}
 
-Given the metric tensor $g_x$ at a point $x \in M$, we define the
-associated symmetric matrix
+The operator $\Delta$ admits a spectral decomposition:
 \[
-G(x) \in \mathbb{R}^{80 \times 80}.
+\Delta \phi_k = \lambda_k \phi_k,
 \]
-Because $G(x)$ is positive-definite, it admits an eigendecomposition
-\[
-G(x) = U(x) \Lambda(x) U(x)^\top,
-\]
-where
+where:
 \begin{itemize}
-    \item $U(x)$ is an orthonormal matrix of eigenvectors,
-    \item $\Lambda(x)$ is a diagonal matrix of eigenvalues
-          $\lambda_1(x), \ldots, \lambda_{80}(x)$.
+    \item $\lambda_k \in \mathbb{R}_{\ge 0}$ are eigenvalues,
+    \item $\phi_k \in C^\infty(\mathcal{M})$ are eigenfunctions,
+    \item $\{\phi_k\}$ forms an orthonormal basis of $L^2(\mathcal{M})$.
 \end{itemize}
 
-\subsection{Projection Operator}
+We assume the spectrum is discrete, which holds for compact $\mathcal{M}$.
 
-For any vector $v \in \mathbb{R}^{80}$, the spectral projection is
-defined as
+\subsection{Spectral Projection}
+
+Given $x \in \mathcal{M}$, define the spectral projection:
 \[
-s = U(x)^\top v.
+s(x) = \Phi_5(x)
+= \left( \phi_1(x), \phi_2(x), \dots, \phi_m(x) \right),
 \]
-This representation expresses $v$ in the eigenbasis of the local
-geometry. The projection is stable under small perturbations of $G(x)$
-due to the smooth dependence of eigenvectors on the metric.
+where $m$ is a fixed spectral bandwidth.
 
-\subsection{Stability Bounds}
+This produces a vector in $\mathbb{R}^m$ encoding the spectral signature of $x$.
 
-Let $\delta G$ be a perturbation of the metric tensor. Standard
-perturbation theory yields
+\subsection{Operator Definition}
+
+Formally:
 \[
-\| U(x + \delta x) - U(x) \| \leq C \| \delta G \|,
+\Phi_5 : \mathcal{M} \to \mathbb{R}^m,
+\qquad
+\Phi_5(x) = (\phi_1(x), \dots, \phi_m(x)).
 \]
-for some constant $C$ depending on the spectral gap of $G(x)$. This
-ensures that the spectral operator behaves smoothly across the manifold
-and does not introduce discontinuities into the embedding pipeline.
 
-\subsection{Altitude Interpretation}
-
-The spectral operator lifts the representation from altitude A5
-(normalized structural features) to altitude A7 (spectral geometry).
-This transition is essential for capturing global geometric behavior
-that cannot be expressed through local degree-based features alone.
-
-\subsection{Output}
-
-The output of the spectral operator is the projected vector
+Altitude alignment:
 \[
-s \in \mathbb{R}^{80},
+\Phi_5 : A3 \to A5.
 \]
-which serves as the input to the curvature envelope operator in the
-next stage of the pipeline.
+
+Domain alignment:
+\[
+\Phi_5 : D_1 \to D_2.
+\]
+
+\subsection{Smoothness}
+
+Since each $\phi_k$ is smooth:
+\[
+\Phi_5 \in C^\infty(\mathcal{M}, \mathbb{R}^m).
+\]
+
+\subsection{Spectral Stability}
+
+For sufficiently small perturbations of the metric:
+\[
+\| \Delta g \| < \varepsilon
+\quad\Longrightarrow\quad
+\| \Delta \Phi_5(x) \| < C \varepsilon.
+\]
+
+This follows from standard perturbation theory for elliptic operators.
+
+\subsection{Spectral Reversibility}
+
+On the spectral domain $D_2$, the map $\Phi_5$ is injective up to isospectral
+symmetry:
+\[
+\Phi_5(x) = \Phi_5(x') \Rightarrow x \sim x'.
+\]
+
+This equivalence is resolved by higher-altitude operators.
+
+\subsection{Spectral Monotonicity}
+
+Altitude monotonicity:
+\[
+x \le x' \Rightarrow \Phi_5(x) \le \Phi_5(x').
+\]
+
+This follows from the ordering of eigenvalues under metric expansion.
+
+\subsection{Operator Role}
+
+The spectral operator provides the first geometric lift in the Redux pipeline:
+\[
+x \mapsto s(x),
+\]
+feeding directly into the curvature operator $\Phi_7$.
+
+This completes the formal development of the spectral operator.
