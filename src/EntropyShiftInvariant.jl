@@ -1,62 +1,97 @@
 module EntropyShiftInvariant
 
-using ..RenyiDyadic
+export entropy_shift_score, entropy_shift_invariant
+
+using LinearAlgebra
 using ..Manifold80D
+using ..A7_Spectral
 using ..CurvatureEnvelope
 using ..HolonomyField
-using ..A8_SoftManifold
-export EntropyShiftInvariantState, compute_entropy_shift_invariant
+using ..TopologyOperator
+using ..FusionOperator
+using ..ConnectivityInvariant
+using ..QuantizationInvariant
+using ..ConvexityInvariant
+using ..CanonicalFormInvariant
+
+# ============================================================
+#  Entropy-Shift Score
+# ============================================================
 
 """
-    EntropyShiftInvariantState
+    entropy_shift_score(e, M)
 
-Represents the entropy-shift curvature invariant for an embedded Rényi profile.
-Stores:
-- raw entropy
-- manifold projection
-- invariant value
+Computes an entropy-shift score for an embedded entropy vector e ∈ ℝ⁸⁰.
+
+Score combines:
+- spectral energy
+- curvature energy
+- holonomy energy
+- topology energy
+- connectivity invariant
+- quantization invariant
+- convexity invariant
+- canonical-form invariant
+
+Formula:
+    E = α Es + β Ec + γ Eh + δ Et
+        + ε I_conn + ζ I_quant + η I_convex + θ I_canon
+
+Altitude: A8.
 """
-struct EntropyShiftInvariantState
-    entropy::Float64
-    projection::Vector{Float64}
-    invariant::Float64
-    altitude::Int
+function entropy_shift_score(e::Vector{Float64}, M::Manifold80D.SoftManifold80D)
+    if length(e) != M.dim
+        error("Entropy-shift score error: vector dimension mismatch.")
+    end
+
+    # Base geometric energies
+    Es = A7_Spectral.spectral_energy(e, M)
+    Ec = CurvatureEnvelope.curvature_energy(e, M)
+    Eh = HolonomyField.holonomy_energy(e, M)
+    Et = TopologyOperator.topology_energy(e, M)
+
+    # Invariant energies
+    I_conn   = ConnectivityInvariant.connectivity_invariant(e, M)
+    I_quant  = QuantizationInvariant.quantization_invariant(e, M)
+    I_convex = ConvexityInvariant.convexity_invariant(e, M)
+    I_canon  = CanonicalFormInvariant.canonical_invariant(e, M)
+
+    # Weights
+    α = 0.125
+    β = 0.125
+    γ = 0.125
+    δ = 0.125
+    ε = 0.125
+    ζ = 0.125
+    η = 0.125
+    θ = 0.125
+
+    return α*Es + β*Ec + γ*Eh + δ*Et +
+           ε*I_conn + ζ*I_quant + η*I_convex + θ*I_canon
 end
 
 
+# ============================================================
+#  Entropy-Shift Invariant
+# ============================================================
+
 """
-    compute_entropy_shift_invariant(R, M)
+    entropy_shift_invariant(e, M)
 
-Computes a placeholder entropy-shift invariant:
-- entropy = Rényi entropy value
-- projection = curvature + holonomy modulated embedding
-- invariant = entropy * norm(projection)
+Computes the full entropy-shift invariant:
 
-Altitude: A8 → A8 invariant extraction.
+    I_shift = Φ(e) * E
+
+where:
+- Φ(e) is fusion energy
+- E is entropy-shift score
+
+Altitude: A8 → A1.
 """
-function compute_entropy_shift_invariant(R::RenyiDyadic.RenyiState,
-                                         M::Manifold80D.SoftManifold80D)
-
-    # A8 soft-manifold validation
-    A8_SoftManifold.route_to_A8(R.probs, M)
-
-    # Raw entropy
-    entropy_value = R.entropy
-
-    # Manifold projection (curvature + holonomy)
-    CE = CurvatureEnvelope.compute_curvature_envelope(M)
-    H  = HolonomyField.compute_connection_form(M)
-
-    projection = zeros(Float64, M.dim)
-    for i in 1:M.dim
-        projection[i] = entropy_value * (1.0 + 0.001 * CE.envelope[i]) +
-                        0.0005 * H.drift_field[i]
-    end
-
-    # Invariant: placeholder norm-based curvature proxy
-    invariant_value = entropy_value * norm(projection)
-
-    return EntropyShiftInvariantState(entropy_value, projection, invariant_value, 8)
+function entropy_shift_invariant(e::Vector{Float64}, M::Manifold80D.SoftManifold80D)
+    E = entropy_shift_score(e, M)
+    Φ = FusionOperator.fusion_energy(e, M)
+    return Φ * E
 end
 
 end # module
