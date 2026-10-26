@@ -1,39 +1,88 @@
 module CurvatureEnvelope
 
+export compute_curvature_envelope, sectional_curvature, curvature_energy
+
+using LinearAlgebra
 using ..Manifold80D
-export compute_curvature_envelope, CurvatureEnvelopeState
+
+# ============================================================
+#  Sectional Curvature Proxy
+# ============================================================
 
 """
-    CurvatureEnvelopeState
+    sectional_curvature(M, i, j)
 
-Container for curvature-related quantities derived from the 80D soft manifold.
-The envelope represents a slack-aware curvature magnitude field.
+Computes a sectional curvature proxy K(eᵢ, eⱼ) using the metric
+diagonal and finite-difference approximations.
+
+Altitude: A8.
 """
-struct CurvatureEnvelopeState
-    envelope::Vector{Float64}     # curvature magnitude per dimension
-    raw_tensor::Array{Float64,4}  # placeholder R_{ijkl}
+function sectional_curvature(M::Manifold80D.SoftManifold80D, i::Int, j::Int)
+    dim = M.dim
+    if i < 1 || j < 1 || i > dim || j > dim
+        error("Sectional curvature index out of bounds.")
+    end
+
+    diag_metric = diag(M.metric)
+
+    # Finite-difference curvature proxy
+    Ki = (i > 1 && i < dim) ? diag_metric[i+1] - 2*diag_metric[i] + diag_metric[i-1] : 0.0
+    Kj = (j > 1 && j < dim) ? diag_metric[j+1] - 2*diag_metric[j] + diag_metric[j-1] : 0.0
+
+    # Combine into a symmetric curvature proxy
+    return 0.5 * (Ki + Kj)
 end
 
 
-"""
-    compute_curvature_envelope(M::SoftManifold80D)
+# ============================================================
+#  Curvature Envelope
+# ============================================================
 
-Computes a placeholder curvature envelope for the manifold.
-Later versions will use the Levi-Civita connection and full Riemann tensor.
 """
-function compute_curvature_envelope(M::SoftManifold80D)
+    compute_curvature_envelope(M)
+
+Computes the curvature envelope κ ∈ ℝ⁸⁰ by aggregating sectional
+curvature proxies across adjacent coordinate planes.
+
+Altitude: A8.
+"""
+function compute_curvature_envelope(M::Manifold80D.SoftManifold80D)
     dim = M.dim
+    κ = zeros(Float64, dim)
 
-    # Placeholder Riemann tensor (dim x dim x dim x dim)
-    raw_tensor = zeros(Float64, dim, dim, dim, dim)
-
-    # Envelope: simple norm placeholder until connection is implemented
-    envelope = zeros(Float64, dim)
-    for i in 1:dim
-        envelope[i] = sum(abs, raw_tensor[i, :, :, :])
+    for i in 1:(dim-1)
+        κ[i] = sectional_curvature(M, i, i+1)
     end
 
-    return CurvatureEnvelopeState(envelope, raw_tensor)
+    # Normalize curvature envelope
+    κ .= κ ./ (1 .+ abs.(κ))
+
+    return κ
+end
+
+
+# ============================================================
+#  Curvature Energy
+# ============================================================
+
+"""
+    curvature_energy(v, M)
+
+Computes curvature energy:
+
+    C(v) = ∑ κᵢ vᵢ²
+
+where κ is the curvature envelope.
+
+Altitude: A7/A8.
+"""
+function curvature_energy(v::Vector{Float64}, M::Manifold80D.SoftManifold80D)
+    if length(v) != M.dim
+        error("Curvature energy error: vector dimension mismatch.")
+    end
+
+    κ = compute_curvature_envelope(M)
+    return sum(κ .* (v .^ 2))
 end
 
 end # module
