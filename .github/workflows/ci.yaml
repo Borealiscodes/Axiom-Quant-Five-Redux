@@ -28,7 +28,6 @@ jobs:
           julia --project=. -e '
             import Pkg;
             Pkg.activate(".");
-            Pkg.develop(path=".");
             Pkg.instantiate();
             Pkg.status();
           '
