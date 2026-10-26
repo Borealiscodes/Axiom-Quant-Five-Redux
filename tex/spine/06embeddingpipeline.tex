@@ -1,0 +1,87 @@
+\section{Full Embedding Pipeline: A3 → A8}
+
+\subsection{Overview}
+
+The embedding pipeline defines the complete altitude transition from
+structural input (A3) to fully modulated geometric representation (A8).
+It integrates all previously defined operators—spectral, curvature,
+holonomy, and topology—into a single coherent transformation.
+
+Given an input structure $G$ (typically an Erdős–Rényi graph), the
+pipeline produces an embedded vector
+\[
+e(G) \in \mathbb{R}^{80},
+\]
+representing the structure in the manifold $M$.
+
+\subsection{Altitude A3: Structural Normalization}
+
+Let $G$ be a graph with degree vector $d \in \mathbb{R}^n$. We define
+the normalized structural vector
+\[
+v \in \mathbb{R}^{80}
+\]
+by padding $d$ to dimension $80$ and applying the normalization
+\[
+v_i = \frac{d_i}{1 + \max_j d_j}.
+\]
+
+This step captures local structural information.
+
+\subsection{Altitude A5: Spectral Projection}
+
+Using the spectral operator defined in Section~2, we compute the
+eigenbasis $U(x)$ of the metric tensor $G(x)$ at a point $x \in M$.
+The spectral projection is
+\[
+s = U(x)^\top v.
+\]
+
+This step expresses the structural vector in the manifold’s geometric
+eigenbasis.
+
+\subsection{Altitude A7: Curvature Modulation}
+
+Using the curvature envelope $\kappa(x)$ defined in Section~3, we
+compute the curvature-modulated vector
+\[
+c = s \odot (1 + \alpha \kappa(x)),
+\]
+where $\alpha$ is a scaling constant.
+
+This step incorporates local geometric curvature into the spectral
+representation.
+
+\subsection{Altitude A8: Holonomy Transport}
+
+Using the holonomy transport operator $H(x)$ defined in Section~4, we
+compute the transported vector
+\[
+h = H(x) c.
+\]
+
+This step incorporates accumulated geometric effects along canonical
+curves in the manifold.
+
+\subsection{Altitude A8: Topology Modulation}
+
+Using the topology signature $\tau(x)$ defined in Section~5, we compute
+the fully modulated embedding
+\[
+e = h \odot (1 + \beta \tau(x)),
+\]
+where $\beta$ is a scaling constant.
+
+This step incorporates global geometric information into the
+representation.
+
+\subsection{Final Output}
+
+The final embedded vector is
+\[
+e(G) \in \mathbb{R}^{80},
+\]
+which serves as the input to the invariant computation layer in the
+next stage of the Redux pipeline.
+
+This completes the altitude transition from A3 to A8.
