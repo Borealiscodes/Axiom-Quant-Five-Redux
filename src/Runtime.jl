@@ -1,66 +1,127 @@
 module Runtime
 
+export ReduxRuntime, evaluate_geometry, evaluate_all_invariants
+
+using LinearAlgebra
+
+# Core manifold
 using ..Manifold80D
+
+# Operators
+using ..A7_Spectral
+using ..CurvatureEnvelope
+using ..HolonomyField
+using ..TopologyOperator
+using ..FusionOperator
+
+# Domains
 using ..ErdosGraph
 using ..BitNetTernary
 using ..MarkowitzFrontier
 using ..BlackScholesVol
-using ..RenyiDyadic
-using ..InvariantSuite
+using ..RenyiEntropy
 
-export RuntimeState, run_redux
+# Invariants
+using ..ConnectivityInvariant
+using ..QuantizationInvariant
+using ..ConvexityInvariant
+using ..CanonicalFormInvariant
+using ..EntropyShiftInvariant
+
+# ============================================================
+#  Runtime Structure
+# ============================================================
 
 """
-    RuntimeState
+    ReduxRuntime()
 
-Represents the full runtime output of Axiom-Quant-Five-Redux.
-Stores:
-- manifold
-- domain states
+Constructs a full Redux runtime with:
+- soft manifold
+- operator suite
+- domain modules
 - invariant suite
+
+Altitude: A1.
 """
-struct RuntimeState
+struct ReduxRuntime
     manifold::Manifold80D.SoftManifold80D
-    domains::NamedTuple
-    invariants::InvariantSuite.InvariantSuiteState
 end
 
 
+# ============================================================
+#  Geometry Evaluation
+# ============================================================
+
 """
-    run_redux(config)
+    evaluate_geometry(rt, domain_vector)
 
-Runs the full Redux pipeline:
-1. Initialize manifold
-2. Compute all domain states
-3. Compute invariant suite
-4. Return unified runtime state
+Runs the full operator stack on a domain vector.
 
-`config` is a NamedTuple containing domain parameters:
-- n, p           (Erdos)
-- x              (BitNet)
-- returns, cov   (Markowitz)
-- strikes, mats  (Black-Scholes)
-- probs, alpha   (Renyi)
+Steps:
+1. Spectral projection
+2. Curvature modulation
+3. Holonomy transport
+4. Topology modulation
+5. Fusion geometry
+
+Returns:
+- fused geometry vector F ∈ ℝ⁸⁰
+
+Altitude: A1.
 """
-function run_redux(config::NamedTuple)
+function evaluate_geometry(rt::ReduxRuntime, v::Vector{Float64})
+    M = rt.manifold
 
-    # 1. Initialize manifold
-    M = Manifold80D.initialize_manifold()
+    # Spectral projection
+    λ, U = A7_Spectral.spectral_decomposition(M)
+    s = U' * v
 
-    # 2. Compute domain states
-    domains = (
-        G  = ErdosGraph.generate_graph(config.n, config.p),
-        B  = BitNetTernary.ternary_quantize(config.x),
-        MK = MarkowitzFrontier.compute_frontier(config.returns, config.cov),
-        BS = BlackScholesVol.compute_vol_surface(config.strikes, config.mats),
-        R  = RenyiDyadic.compute_renyi_entropy(config.probs, config.alpha)
+    # Curvature modulation
+    κ = CurvatureEnvelope.compute_curvature_envelope(M)
+    c = s .* (1 .+ 0.1 .* κ)
+
+    # Holonomy transport
+    h = HolonomyField.holonomy_transport(c, M)
+
+    # Topology modulation
+    τ = TopologyOperator.compute_topology_signature(M)
+    t = h .* (1 .+ 0.05 .* τ)
+
+    # Fusion geometry
+    F = FusionOperator.fused_geometry(t, M)
+
+    return F
+end
+
+
+# ============================================================
+#  Invariant Evaluation
+# ============================================================
+
+"""
+    evaluate_all_invariants(rt, F)
+
+Computes all invariants on fused geometry F.
+
+Returns NamedTuple:
+- connectivity
+- quantization
+- convexity
+- canonical_form
+- entropy_shift
+
+Altitude: A1.
+"""
+function evaluate_all_invariants(rt::ReduxRuntime, F::Vector{Float64})
+    M = rt.manifold
+
+    return (
+        connectivity     = ConnectivityInvariant.connectivity_invariant(F, M),
+        quantization     = QuantizationInvariant.quantization_invariant(F, M),
+        convexity        = ConvexityInvariant.convexity_invariant(F, M),
+        canonical_form   = CanonicalFormInvariant.canonical_invariant(F, M),
+        entropy_shift    = EntropyShiftInvariant.entropy_shift_invariant(F, M)
     )
-
-    # 3. Compute invariant suite
-    invariants = InvariantSuite.compute_invariant_suite(domains, M)
-
-    # 4. Return unified runtime state
-    return RuntimeState(M, domains, invariants)
 end
 
 end # module
