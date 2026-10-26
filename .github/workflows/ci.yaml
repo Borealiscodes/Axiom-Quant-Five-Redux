@@ -21,6 +21,12 @@ jobs:
         with:
           version: '1.10'
 
+      - name: Force local project
+        run: |
+          echo "Using local Project.toml"
+          cat Project.toml
+          julia --project=. -e 'import Pkg; Pkg.activate("."); Pkg.instantiate()'
+
       - name: Install dependencies
         uses: julia-actions/julia-buildpkg@v1
 
