@@ -1,61 +1,147 @@
-\section{The 80D Soft Manifold Structure}
+\section{Soft 80D Riemannian Manifold}
+\label{sec:manifold}
 
-\subsection{Definition}
+This appendix provides the full geometric development of the soft
+80-dimensional Riemannian manifold used throughout the AxiomQuant Five Redux
+system. All operators $\Phi_5, \Phi_7, \Phi_8, \Phi_8^t, \Phi_9$ act on this
+manifold, and all altitude and domain transitions are defined relative to its
+geometric structure.
 
-We define the ambient geometric space of the Redux runtime as an
-$80$-dimensional soft manifold
-\[
-M = (\mathbb{R}^{80}, g),
-\]
-equipped with a smoothly varying metric tensor $g$ that encodes the
-local geometric behavior of the embedding pipeline. The manifold is
-not intended to model a physical geometry; rather, it provides a
-stable mathematical substrate for spectral, curvature, holonomy, and
-topological operators.
+\subsection{Manifold Definition}
 
-\subsection{Coordinate Charts}
+Let $\mathcal{M}$ be a smooth manifold of dimension $80$. We assume:
 
-Let $\{U_i\}_{i=1}^{k}$ be an open cover of $\mathbb{R}^{80}$ such that
-each $U_i$ admits a coordinate chart
-\[
-\varphi_i : U_i \to \mathbb{R}^{80}.
-\]
-Because the manifold is modeled directly on $\mathbb{R}^{80}$, the
-charts are globally compatible, and transition maps are smooth.
+\begin{enumerate}
+    \item $\mathcal{M}$ is Hausdorff and second-countable.
+    \item $\mathcal{M}$ admits a smooth atlas $\{(U_\alpha, \varphi_\alpha)\}$.
+    \item All transition maps are $C^\infty$.
+\end{enumerate}
+
+We write $\mathcal{M}^{80}$ when emphasizing the dimension.
 
 \subsection{Metric Tensor}
 
-The metric tensor $g$ is defined pointwise by
+A smooth Riemannian metric
 \[
-g_x(u, v) = u^\top G(x) v,
+g : T\mathcal{M} \times T\mathcal{M} \to \mathbb{R}
 \]
-where $G(x)$ is a positive-definite matrix depending smoothly on $x$.
-This allows the manifold to encode curvature envelopes and holonomy
-transport in later sections.
-
-\subsection{Curvature}
-
-The Riemann curvature tensor is defined in the usual way:
+is assumed. In coordinates $(x^1,\dots,x^{80})$,
 \[
-R(u, v)w = \nabla_u \nabla_v w - \nabla_v \nabla_u w - \nabla_{[u,v]} w.
+g = g_{ij}(x)\, dx^i \otimes dx^j,
 \]
-In practice, the curvature envelope operator extracts a normalized
-curvature signature
+with $g_{ij}(x)$ symmetric and positive-definite.
+
+Smoothness assumption:
 \[
-\kappa(x) \in \mathbb{R}^{80},
+g_{ij} \in C^\infty(\mathcal{M}).
 \]
-which is used to modulate spectral projections.
 
-\subsection{Manifold as Embedding Domain}
+\subsection{Levi-Civita Connection}
 
-The manifold $M$ serves as the target space for embeddings of
-Erdős–Rényi graphs and other symbolic structures. Given a graph $G$,
-the embedding pipeline produces a vector
+The Levi-Civita connection $\nabla$ is uniquely determined by $g$ via:
+
+\begin{enumerate}
+    \item Metric compatibility: $\nabla g = 0$.
+    \item Torsion-free: $T(X,Y) = \nabla_X Y - \nabla_Y X - [X,Y] = 0$.
+\end{enumerate}
+
+Connection coefficients:
 \[
-e(G) \in M,
+\Gamma^k_{\ ij}
+= \frac{1}{2} g^{k\ell}
+\left(
+\partial_i g_{\ell j}
++ \partial_j g_{\ell i}
+- \partial_\ell g_{ij}
+\right).
 \]
-whose coordinates encode spectral, curvature, holonomy, and topological
-features of the input structure.
 
-This section establishes the geometric substrate required for all
-higher-altitude operators.
+\subsection{Curvature Tensor}
+
+The Riemann curvature tensor is defined by:
+\[
+R(X,Y)Z = \nabla_X \nabla_Y Z - \nabla_Y \nabla_X Z - \nabla_{[X,Y]} Z.
+\]
+
+In coordinates:
+\[
+R^i_{\ jkl}
+= \partial_k \Gamma^i_{\ jl}
+- \partial_l \Gamma^i_{\ jk}
++ \Gamma^i_{\ km}\Gamma^m_{\ jl}
+- \Gamma^i_{\ lm}\Gamma^m_{\ jk}.
+\]
+
+Smoothness assumption:
+\[
+R^i_{\ jkl} \in C^\infty(\mathcal{M}).
+\]
+
+\subsection{Holonomy Field}
+
+Define the holonomy field
+\[
+H : \mathcal{M} \to \mathrm{SO}(80)
+\]
+as the smooth assignment of parallel-transport operators around infinitesimal
+loops.
+
+Formally:
+\[
+H(x) = \exp\!\left( \int_{\gamma_x} R \right),
+\]
+where $\gamma_x$ is an infinitesimal loop based at $x$.
+
+Smoothness assumption:
+\[
+H \in C^\infty(\mathcal{M}, \mathrm{SO}(80)).
+\]
+
+\subsection{Topology Signature}
+
+Define the topology signature
+\[
+\tau : \mathcal{M} \to \mathbb{R}^{80}
+\]
+as a smooth field encoding local topological variation.
+
+Examples include:
+\begin{itemize}
+    \item Betti-number gradients,
+    \item local homology shifts,
+    \item micro-fibration signatures.
+\end{itemize}
+
+Smoothness assumption:
+\[
+\tau \in C^\infty(\mathcal{M}, \mathbb{R}^{80}).
+\]
+
+\subsection{Soft-Manifold Constraint}
+
+The manifold is \emph{soft} in the sense that small perturbations of the metric
+do not induce topological collapse.
+
+Formally, for sufficiently small $\varepsilon > 0$:
+\[
+\| \Delta g \| < \varepsilon
+\quad\Longrightarrow\quad
+\Delta \tau \text{ is bounded}.
+\]
+
+This ensures that all operators $\Phi_5, \Phi_7, \Phi_8, \Phi_8^t, \Phi_9$ are
+well-defined and smooth.
+
+\subsection{Operator-Ready Structure}
+
+The manifold provides the geometric primitives required by the operator chain:
+
+\begin{itemize}
+    \item $\Phi_5$ uses $g$ for spectral projection.
+    \item $\Phi_7$ uses $R$ for curvature modulation.
+    \item $\Phi_8$ uses $H$ for holonomy transport.
+    \item $\Phi_8^t$ uses $\tau$ for topology modulation.
+    \item $\Phi_9$ uses all fields to extract invariants.
+\end{itemize}
+
+This completes the formal manifold structure required by the canonical spine.
