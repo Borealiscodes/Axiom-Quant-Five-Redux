@@ -21,28 +21,22 @@ jobs:
         with:
           version: '1.10'
 
-      - name: Force local project activation
+      - name: Prepare local package
         run: |
           echo "Using local Project.toml"
           cat Project.toml
           julia --project=. -e '
             import Pkg;
             Pkg.activate(".");
+            Pkg.develop(path=".");
             Pkg.instantiate();
             Pkg.status();
           '
 
-      - name: Install dependencies
-        uses: julia-actions/julia-buildpkg@v1
-
-      - name: Run tests
-        uses: julia-actions/julia-runtest@v1
-
-      - name: Process coverage
-        uses: julia-actions/julia-processcoverage@v1
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          files: lcov.info
-          fail_ci_if_error: true
+      - name: Run tests (manual)
+        run: |
+          julia --project=. -e '
+            import Pkg;
+            Pkg.activate(".");
+            Pkg.test();
+          '
