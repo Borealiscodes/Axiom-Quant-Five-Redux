@@ -1,5 +1,3 @@
-Axiom-Quant-Five-Redux/
-
 namespace AxiomQuant.Operators.Spectral
 
 open AxiomQuant.Manifold
