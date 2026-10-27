@@ -45,4 +45,12 @@ axiom spectral_extract_monotone :
     g₁ ≤ g₂ →
     spectral_extract g₁ ≤ spectral_extract g₂
 
+lemma smooth_Phi5 : Smooth Phi5 := by
+  -- Unfold the definition of Phi5
+  unfold Phi5
+  -- Apply smoothness of spectral_extract
+  apply spectral_extract_smooth.comp
+  -- The projection M ↦ M.g is smooth
+  apply smooth_fst
+
 end AxiomQuant.Operators.Spectral
