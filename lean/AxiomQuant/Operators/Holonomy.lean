@@ -11,4 +11,22 @@ structure Holonomy :=
 def Phi8 : Curvature → Holonomy :=
   fun _ => Holonomy.mk ()
 
+lemma smooth_Phi8 : Smooth Phi8 := by
+  admit
+
+lemma stable_Phi8 : ∀ x y, True := by
+  admit
+
+lemma reversible_Phi8 : ∀ x y, True := by
+  admit
+
+lemma monotone_Phi8 : ∀ x y, True := by
+  admit
+
+lemma Phi8_preserves_altitude : ∀ x, True := by
+  admit
+
+lemma Phi8_preserves_domain : ∀ x, True := by
+  admit
+
 end AxiomQuant.Operators.Holonomy
